@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 882638729841305493}
   - component: {fileID: 9151001330150357282}
   - component: {fileID: 3776616769024358438}
+  - component: {fileID: 6671910373057882754}
   m_Layer: 0
   m_Name: DirtBlock
   m_TagString: Untagged
@@ -324,3 +325,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &6671910373057882754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3961669459167680194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d05be5bb6e072624cba8ff9f7891f3d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  durabilitySecond: 2
+  breakParticlePrefeb: {fileID: 0}
