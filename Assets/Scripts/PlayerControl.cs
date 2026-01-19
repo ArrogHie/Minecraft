@@ -4,6 +4,7 @@ public class PlayerControl : Entity
 {
     public CameraSettings cameraSettings;
     public Block activeBlock;
+    public Inventory inventory;
 
     private int onGround = 0;
     private float xRotation = 0f;
@@ -29,13 +30,16 @@ public class PlayerControl : Entity
     // Update is called once per frame
     void Update()
     {
-        CheckRotation();
         CheckMove();
-        CheckJump();
-        CheckTargetBlock();
-        if (Input.GetButtonDown("Fire2")) TryPressBlock();
-        if (Input.GetButton("Fire1")) TryBreakBlock();
-        else { breakSeconds = 0f; }
+        if (!inventory.isOpen)
+        {
+            CheckRotation();
+            CheckJump();
+            CheckTargetBlock();
+            if (Input.GetButtonDown("Fire2")) TryPressBlock();
+            if (Input.GetButton("Fire1")) TryBreakBlock();
+            else { breakSeconds = 0f; }
+        }
     }
 
     private void CheckRotation()
@@ -52,11 +56,16 @@ public class PlayerControl : Entity
 
     private void CheckMove()
     {
-        rigidbody.velocity = new Vector3(
-            Input.GetAxis("Horizontal") * speed * Time.deltaTime,
-            rigidbody.velocity.y,
-            Input.GetAxis("Vertical") * speed * Time.deltaTime
-            );
+        if (inventory.isOpen) { rigidbody.velocity = new Vector3(0, rigidbody.velocity.y, 0); }
+        else
+        {
+            rigidbody.velocity = new Vector3(
+                Input.GetAxis("Horizontal") * speed * Time.deltaTime,
+                rigidbody.velocity.y,
+                Input.GetAxis("Vertical") * speed * Time.deltaTime
+                );
+        }
+
         //Debug.Log(rigidbody.velocity);
         rigidbody.velocity = transform.TransformDirection(rigidbody.velocity);
     }
@@ -67,7 +76,7 @@ public class PlayerControl : Entity
         if (Input.GetButtonDown("Jump"))
         {
             Jump();
-            Debug.Log("press jump");
+            //Debug.Log("press jump");
         }
     }
 
@@ -107,13 +116,13 @@ public class PlayerControl : Entity
     private void OnTriggerEnter(Collider other)
     {
         onGround++;
-        Debug.Log("On Ground");
+        //Debug.Log("On Ground");
     }
 
     private void OnTriggerExit(Collider other)
     {
         onGround--;
-        Debug.Log("Jumped");
+        //Debug.Log("Jumped");
     }
 
     [System.Serializable]

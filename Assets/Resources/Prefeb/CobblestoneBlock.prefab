@@ -338,4 +338,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   durabilitySecond: 2
-  breakParticlePrefeb: {fileID: 0}
+  breakParticlePrefeb: {fileID: 5325725141898399480, guid: 412c056ebe5a7d941a19cc151c317c74, type: 3}

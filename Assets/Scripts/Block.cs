@@ -17,7 +17,11 @@ public class Block : MonoBehaviour
     {
         if (breakParticleInstance)
         {
-            if (lastBreakProgress < Time.time - .1f) Destroy(breakParticleInstance);
+            if (lastBreakProgress < Time.time - .1f)
+            {
+                var emission = breakParticleInstance.emission;
+                emission.enabled = false;
+            }
         }
     }
 
@@ -26,9 +30,13 @@ public class Block : MonoBehaviour
         lastBreakProgress = Time.time;
         if (breakParticlePrefeb && !breakParticleInstance)
         {
-            breakParticleInstance = Instantiate(breakParticlePrefeb);
-            breakParticleInstance.transform.position = transform.position;
+            Vector3 position = transform.position;
+            position += new Vector3(0.5f, 0.5f, 0.5f);
+            breakParticleInstance = Instantiate(breakParticlePrefeb, position, Quaternion.identity);
+            breakParticleInstance.transform.parent = transform;
         }
+        var emission = breakParticleInstance.emission;
+        emission.enabled = true;
         if (breakSecond > durabilitySecond)
         {
             Break();
