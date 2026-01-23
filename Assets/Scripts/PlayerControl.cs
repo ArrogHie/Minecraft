@@ -48,10 +48,9 @@ public class PlayerControl : Entity
         float mouseY = Input.GetAxis("Mouse Y") * cameraSettings.sensitivityY;
         xRotation += mouseX;
         yRotation -= mouseY;
-        yRotation = Mathf.Clamp(yRotation, -90f, 90f);
-        transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
-        cameraSettings.camera.transform.localRotation = Quaternion.Euler(yRotation, 0f, 0f);
-
+        yRotation = Mathf.Clamp(yRotation, -89f, 89f);
+        //transform.localRotation = Quaternion.Euler(0f, xRotation, 0f);
+        cameraSettings.camera.transform.localRotation = Quaternion.Euler(yRotation, xRotation, 0f);
     }
 
     private void CheckMove()
@@ -59,10 +58,17 @@ public class PlayerControl : Entity
         if (inventory.isOpen) { rigidbody.velocity = new Vector3(0, rigidbody.velocity.y, 0); }
         else
         {
+            Vector3 camForward = cameraSettings.camera.transform.forward;
+            Vector3 camRight = cameraSettings.camera.transform.right;
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            Vector3 moveDirection = camForward * Input.GetAxis("Vertical") + camRight * Input.GetAxis("Horizontal");
             rigidbody.velocity = new Vector3(
-                Input.GetAxis("Horizontal") * speed * Time.deltaTime,
+                moveDirection.x * speed * Time.deltaTime,
                 rigidbody.velocity.y,
-                Input.GetAxis("Vertical") * speed * Time.deltaTime
+                moveDirection.z * speed * Time.deltaTime
                 );
         }
 
