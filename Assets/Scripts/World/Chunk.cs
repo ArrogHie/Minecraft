@@ -86,17 +86,44 @@ public class Chunk : MonoBehaviour
 
     private void CombineBlockMesh()
     {
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.parent.localToWorldMatrix.inverse * meshFilters[i].transform.localToWorldMatrix;
+        }
+
+        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+        meshFilter.mesh = new Mesh();
+        meshFilter.mesh.CombineMeshes(combine);
+
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = mate;
+
+        foreach (Transform quad in transform)
+        {
+            Destroy(quad.gameObject);
+        }
     }
 
     private void CreatCollider()
     {
+        MeshCollider meshCollider = gameObject.AddComponent<MeshCollider>();
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        meshCollider.sharedMesh = mesh;
+    }
 
+    public Block GetBlock(Vector3 pos)
+    {
+        if (pos.x < 0 || pos.x >= chunkSize || pos.y < 0 || pos.y >= chunkHeight || pos.z < 0 || pos.z >= chunkSize) return null;
+        return blocks[(int)pos.x, (int)pos.y, (int)pos.z];
     }
 
     public bool CheckFoxVoxel(Vector3 pos)
     {
-        if (pos.x < 0 || pos.x > chunkSize || pos.y < 0 || pos.y > chunkHeight || pos.z < 0 || pos.z > chunkSize) return false;
+        if (pos.x < 0 || pos.x >= chunkSize || pos.y < 0 || pos.y >= chunkHeight || pos.z < 0 || pos.z >= chunkSize) return false;
         return blocks[(int)pos.x, (int)pos.y, (int)pos.z].blockType != BlockType.Air;
     }
 }
