@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
+    public static World instance;
+
     public int renderChunk = 5;
     public Material cubeMate;
     public GameObject player;
@@ -15,8 +17,14 @@ public class World : MonoBehaviour
 
     private int seed;
 
+    private void Awake()
+    {
+        instance = this;
+    }
+
     private void SetSeed()
     {
+        Random.InitState(System.DateTime.Now.Millisecond);
         seed = Random.Range(-1000, 1000);
     }
 
@@ -97,7 +105,7 @@ public class World : MonoBehaviour
         Vector2Int pos = new Vector2Int(x, y);
         chunks.Add(pos, chunk);
         visChunks.TryAdd(pos, chunk);
-        chunk.InitChunk(cubeMate, seed);
+        chunk.InitChunk(cubeMate, seed, pos);
         StartCoroutine(chunk.GenerateChunk());
     }
 
@@ -111,6 +119,15 @@ public class World : MonoBehaviour
             chunks.Remove(pos);
             Destroy(chunk.gameObject);
         }
+    }
+
+    public Chunk getChunk(Vector2Int pos)
+    {
+        if (chunks.ContainsKey(pos))
+        {
+            return chunks[pos];
+        }
+        return null;
     }
 
 }

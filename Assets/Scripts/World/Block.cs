@@ -36,10 +36,11 @@ public enum BlockFaceType
 
 public class Block
 {
-    //public float durabilitySecond = 2.0f;
+    public float durabilitySecond = 2.0f;
     //public ParticleSystem breakParticlePrefeb;
     //ParticleSystem breakParticleInstance;
-    //float lastBreakProgress = 0f;
+    private float breakTime = 0f;
+    private int lastBreakUV = 0;
 
     public Vector3 position;
     public BlockType blockType;
@@ -55,7 +56,17 @@ public class Block
         /*Sand*/        {new Vector2(0.25f,0.50f),new Vector2(0.50f,0.50f),new Vector2(0.25f,0.75f),new Vector2(0.50f,0.75f)},
         /*Stone*/       {new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f),new Vector2(0.50f,0.75f),new Vector2(0.75f,0.75f)},
         /*Leaves*/      {new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f),new Vector2(0.75f,0.75f),new Vector2(1.00f,0.75f)},
-        /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)},
+        /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)}
+    };
+
+    public static Vector2[,] healthUVs =
+    {
+        {new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f),new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f)},
+        {new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f),new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f)},
+        {new Vector2(0.00f,0.00f),new Vector2(0.25f,0.00f),new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f)},
+        {new Vector2(0.25f,0.00f),new Vector2(0.50f,0.00f),new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f)},
+        {new Vector2(0.50f,0.00f),new Vector2(0.75f,0.00f),new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f)},
+        {new Vector2(0.75f,0.00f),new Vector2(1.00f,0.00f),new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f)}
     };
 
     public Block(BlockType type, Chunk owner, Vector3 pos)
@@ -112,19 +123,24 @@ public class Block
         Vector2[] uvs = new Vector2[4];
         Vector3[] normals = new Vector3[4];
 
-        Vector3 p0 = new Vector3(-0.5f, -0.5f, 0.5f); // 左下前
-        Vector3 p1 = new Vector3(0.5f, -0.5f, 0.5f);  // 右下前
-        Vector3 p2 = new Vector3(0.5f, -0.5f, -0.5f); // 右下后
-        Vector3 p3 = new Vector3(-0.5f, -0.5f, -0.5f);// 左下后
-        Vector3 p4 = new Vector3(-0.5f, 0.5f, 0.5f);  // 左上前
-        Vector3 p5 = new Vector3(0.5f, 0.5f, 0.5f);   // 右上前
-        Vector3 p6 = new Vector3(0.5f, 0.5f, -0.5f);  // 右上后
-        Vector3 p7 = new Vector3(-0.5f, 0.5f, -0.5f); // 左上后
+        Vector3 p0 = new Vector3(0, 0, 1); // 左下前
+        Vector3 p1 = new Vector3(1, 0, 1); // 右下前
+        Vector3 p2 = new Vector3(1, 0, 0); // 右下后
+        Vector3 p3 = new Vector3(0, 0, 0); // 左下后
+        Vector3 p4 = new Vector3(0, 1, 1); // 左上前
+        Vector3 p5 = new Vector3(1, 1, 1); // 右上前
+        Vector3 p6 = new Vector3(1, 1, 0); // 右上后
+        Vector3 p7 = new Vector3(0, 1, 0); // 左上后
 
         Vector2 uv0 = blockUVs[0, 0];
         Vector2 uv1 = blockUVs[0, 1];
         Vector2 uv2 = blockUVs[0, 2];
         Vector2 uv3 = blockUVs[0, 3];
+
+        Vector2 suvs0 = healthUVs[lastBreakUV, 0];
+        Vector2 suvs1 = healthUVs[lastBreakUV, 1];
+        Vector2 suvs2 = healthUVs[lastBreakUV, 2];
+        Vector2 suvs3 = healthUVs[lastBreakUV, 3];
 
         if (blockType == BlockType.Grass)
         {
@@ -207,6 +223,7 @@ public class Block
         mesh.vertices = vertices;
         mesh.triangles = trangles;
         mesh.uv = uvs;
+        mesh.SetUVs(1, new Vector2[] { suvs0, suvs1, suvs3, suvs2 });
         mesh.normals = normals;
 
         mesh.RecalculateBounds();
@@ -218,29 +235,38 @@ public class Block
         meshFilter.mesh = mesh;
     }
 
-    //public bool TryBreak(float breakSecond)
-    //{
-    //    lastBreakProgress = Time.time;
-    //    if (breakParticlePrefeb && !breakParticleInstance)
-    //    {
-    //        Vector3 position = transform.position;
-    //        position += new Vector3(0.5f, 0.5f, 0.5f);
-    //        breakParticleInstance = Instantiate(breakParticlePrefeb, position, Quaternion.identity);
-    //        breakParticleInstance.transform.parent = transform;
-    //    }
-    //    var emission = breakParticleInstance.emission;
-    //    emission.enabled = true;
-    //    if (breakSecond > durabilitySecond)
-    //    {
-    //        Break();
-    //        return true;
-    //    }
-    //    return false;
-    //}
+    public bool TryBreak(float breakSecond)
+    {
+        breakTime = breakSecond;
+        //if (breakParticlePrefeb && !breakParticleInstance)
+        //{
+        //    Vector3 pos = this.position;
+        //    pos += new Vector3(0.5f, 0.5f, 0.5f);
+        //    breakParticleInstance = UnityEngine.Object.Instantiate(breakParticlePrefeb, pos, Quaternion.identity);
+        //    breakParticleInstance.transform.parent = owner.transform;
+        //}
+        //var emission = breakParticleInstance.emission;
+        //emission.enabled = true;
+        if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
+        {
+            lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
+            owner.RedrawChunk();
+        }
 
-    //private void Break()
-    //{
-    //    if (breakParticleInstance) Destroy(breakParticleInstance);
-    //    Destroy(gameObject);
-    //}
+        if (breakSecond > durabilitySecond)
+        {
+            breakTime = 0f;
+            lastBreakUV = 0;
+            Break();
+            return true;
+        }
+        return false;
+    }
+
+    private void Break()
+    {
+        //if (breakParticleInstance) Destroy(breakParticleInstance);
+        //Destroy(gameObject);
+        owner.SetBlockType(position, BlockType.Air);
+    }
 }
