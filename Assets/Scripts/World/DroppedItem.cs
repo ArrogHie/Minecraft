@@ -1,50 +1,15 @@
 using UnityEngine;
 
-public enum BlockType
+public class DroppedItem : MonoBehaviour
 {
-    Air,
-    Dirt,
-    Grass,
-    Stone,
-    Wood,
-    Leaf,
-    Cobblestone
-}
+    [Header("旋转设置")]
+    public float rotationSpeed = 90f; // 旋转速度
+    [Header("浮动设置")]
+    public float floatAmplitude = 0.1f; // 浮动幅度
+    public float floatFrequency = 1f; // 浮动频率
 
-public enum CubeSide
-{
-    Front,
-    Back,
-    Left,
-    Right,
-    Top,
-    Bottom
-}
-
-public enum BlockFaceType
-{
-    Dirt,
-    GrassSide,
-    GrassTop,
-    WoodSide,
-    WoodTop,
-    Sand,
-    Stone,
-    Leaves,
-    Cobblestone
-}
-
-public class Block
-{
-    public float durabilitySecond = 2.0f;
-    //public ParticleSystem breakParticlePrefeb;
-    //ParticleSystem breakParticleInstance;
-    private float breakTime = 0f;
-    private int lastBreakUV = 0;
-
-    public Vector3 position; // 相对坐标
-    public BlockType blockType;
-    public Chunk owner;
+    private BlockType blockType;
+    public Material mate;
 
     public static Vector2[,] blockUVs =
     {
@@ -59,60 +24,6 @@ public class Block
         /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)}
     };
 
-    public static Vector2[,] healthUVs =
-    {
-        {new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f),new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f)},
-        {new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f),new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f)},
-        {new Vector2(0.00f,0.00f),new Vector2(0.25f,0.00f),new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f)},
-        {new Vector2(0.25f,0.00f),new Vector2(0.50f,0.00f),new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f)},
-        {new Vector2(0.50f,0.00f),new Vector2(0.75f,0.00f),new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f)},
-        {new Vector2(0.75f,0.00f),new Vector2(1.00f,0.00f),new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f)}
-    };
-
-    public Block(BlockType type, Chunk owner, Vector3 pos)
-    {
-        this.blockType = type;
-        this.position = pos;
-        this.owner = owner;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //if (breakParticleInstance)
-        //{
-        //    if (lastBreakProgress < Time.time - .1f)
-        //    {
-        //        var emission = breakParticleInstance.emission;
-        //        emission.enabled = false;
-        //    }
-        //}
-    }
-
-    public void CreateCube()
-    {
-        if (blockType == BlockType.Air) return;
-
-        if (!owner.CheckFoxVoxel(position + Vector3.up))
-            CreateFace(CubeSide.Top);
-        if (!owner.CheckFoxVoxel(position + Vector3.down))
-            CreateFace(CubeSide.Bottom);
-        if (!owner.CheckFoxVoxel(position + Vector3.left))
-            CreateFace(CubeSide.Left);
-        if (!owner.CheckFoxVoxel(position + Vector3.right))
-            CreateFace(CubeSide.Right);
-        if (!owner.CheckFoxVoxel(position + Vector3.forward))
-            CreateFace(CubeSide.Front);
-        if (!owner.CheckFoxVoxel(position + Vector3.back))
-            CreateFace(CubeSide.Back);
-    }
-
     void CreateFace(CubeSide side)
     {
         Mesh mesh = new Mesh();
@@ -123,24 +34,19 @@ public class Block
         Vector2[] uvs = new Vector2[4];
         Vector3[] normals = new Vector3[4];
 
-        Vector3 p0 = new Vector3(0, 0, 1); // 左下前
-        Vector3 p1 = new Vector3(1, 0, 1); // 右下前
-        Vector3 p2 = new Vector3(1, 0, 0); // 右下后
-        Vector3 p3 = new Vector3(0, 0, 0); // 左下后
-        Vector3 p4 = new Vector3(0, 1, 1); // 左上前
-        Vector3 p5 = new Vector3(1, 1, 1); // 右上前
-        Vector3 p6 = new Vector3(1, 1, 0); // 右上后
-        Vector3 p7 = new Vector3(0, 1, 0); // 左上后
+        Vector3 p0 = new Vector3(-0.1f, -0.1f, 0.1f); // 左下前
+        Vector3 p1 = new Vector3(0.1f, -0.1f, 0.1f); // 右下前
+        Vector3 p2 = new Vector3(0.1f, -0.1f, -0.1f); // 右下后
+        Vector3 p3 = new Vector3(-0.1f, -0.1f, -0.1f); // 左下后
+        Vector3 p4 = new Vector3(-0.1f, 0.1f, 0.1f); // 左上前
+        Vector3 p5 = new Vector3(0.1f, 0.1f, 0.1f); // 右上前
+        Vector3 p6 = new Vector3(0.1f, 0.1f, -0.1f); // 右上后
+        Vector3 p7 = new Vector3(-0.1f, 0.1f, -0.1f); // 左上后
 
         Vector2 uv0 = blockUVs[0, 0];
         Vector2 uv1 = blockUVs[0, 1];
         Vector2 uv2 = blockUVs[0, 2];
         Vector2 uv3 = blockUVs[0, 3];
-
-        Vector2 suvs0 = healthUVs[lastBreakUV, 0];
-        Vector2 suvs1 = healthUVs[lastBreakUV, 1];
-        Vector2 suvs2 = healthUVs[lastBreakUV, 2];
-        Vector2 suvs3 = healthUVs[lastBreakUV, 3];
 
         if (blockType == BlockType.Grass)
         {
@@ -223,50 +129,64 @@ public class Block
         mesh.vertices = vertices;
         mesh.triangles = trangles;
         mesh.uv = uvs;
-        mesh.SetUVs(1, new Vector2[] { suvs0, suvs1, suvs3, suvs2 });
         mesh.normals = normals;
 
         mesh.RecalculateBounds();
 
         GameObject quad = new GameObject("quad");
-        quad.transform.parent = owner.transform;
-        quad.transform.localPosition = position;
+        quad.transform.parent = transform;
+        quad.transform.localPosition = Vector3.zero;
         MeshFilter meshFilter = quad.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
+
+        //Debug.Log(quad.transform.position);
     }
 
-    public bool TryBreak(float breakSecond)
+    private void CombineBlockMesh()
     {
-        breakTime = breakSecond;
-        //if (breakParticlePrefeb && !breakParticleInstance)
-        //{
-        //    Vector3 pos = this.position;
-        //    pos += new Vector3(0.5f, 0.5f, 0.5f);
-        //    breakParticleInstance = UnityEngine.Object.Instantiate(breakParticlePrefeb, pos, Quaternion.identity);
-        //    breakParticleInstance.transform.parent = owner.transform;
-        //}
-        //var emission = breakParticleInstance.emission;
-        //emission.enabled = true;
-        if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+        for (int i = 0; i < meshFilters.Length; i++)
         {
-            lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
-            owner.RedrawChunk();
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.parent.localToWorldMatrix.inverse * meshFilters[i].transform.localToWorldMatrix;
         }
 
-        if (breakSecond > durabilitySecond)
+        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+        meshFilter.mesh = new Mesh();
+        meshFilter.mesh.CombineMeshes(combine);
+
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = mate;
+
+        foreach (Transform quad in transform)
         {
-            breakTime = 0f;
-            lastBreakUV = 0;
-            Break();
-            return true;
+            Destroy(quad.gameObject);
         }
-        return false;
     }
 
-    private void Break()
+    public void Init(BlockType type)
     {
-        //if (breakParticleInstance) Destroy(breakParticleInstance);
-        //Destroy(gameObject);
-        owner.BreakBlock(position, blockType);
+        blockType = type;
+        foreach (CubeSide side in System.Enum.GetValues(typeof(CubeSide)))
+        {
+            CreateFace(side);
+        }
+        CombineBlockMesh();
+
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        float newY = (Mathf.Sin(Time.time * floatFrequency) + 1) * floatAmplitude + 0.1f;
+        transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
     }
 }

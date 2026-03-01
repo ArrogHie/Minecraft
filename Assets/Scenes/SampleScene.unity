@@ -2328,6 +2328,7 @@ MonoBehaviour:
   renderChunk: 3
   cubeMate: {fileID: 2100000, guid: 544839844fdb1fc4da9772fe064ad130, type: 2}
   player: {fileID: 230391089}
+  dropPrefeb: {fileID: 3766239294639352333, guid: 601d502a1569c89419782fd7d580da28, type: 3}
 --- !u!1 &1546350725
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,6 +17,9 @@ public class World : MonoBehaviour
 
     private int seed;
 
+    [Header("µÙ¬‰ŒÔ")]
+    public GameObject dropPrefeb;
+
     private void Awake()
     {
         instance = this;
@@ -128,6 +131,15 @@ public class World : MonoBehaviour
             return chunks[pos];
         }
         return null;
+    }
+
+    public void CreatDrop(Vector3 position, BlockType type)
+    {
+        //Debug.Log("Drop pos" + position);
+        GameObject dropObj = Instantiate(dropPrefeb, position, Quaternion.identity);
+        dropObj.name = "DropItem";
+        DroppedItem droppedItem = dropObj.GetComponentInChildren<DroppedItem>();
+        droppedItem.Init(type);
     }
 
 }

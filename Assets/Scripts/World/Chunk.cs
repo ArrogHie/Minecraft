@@ -149,6 +149,12 @@ public class Chunk : MonoBehaviour
         return blocks[(int)pos.x, (int)pos.y, (int)pos.z].blockType != BlockType.Air;
     }
 
+    public void BreakBlock(Vector3 position, BlockType type)
+    {
+        SetBlockType(position, BlockType.Air);
+        World.instance.CreatDrop(transform.position + position + new Vector3(0.5f, 0.5f, 0.5f), type);
+    }
+
     //void OnDrawGizmos()
     //{
     //    // 设置侧面颜色（例如半透明红色，方便识别边界）
