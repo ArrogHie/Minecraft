@@ -4,9 +4,10 @@ using UnityEngine;
 public class Chunk : MonoBehaviour
 {
     public static int chunkSize = 16;
-    public static int chunkHeight = 24;
+    public static int chunkHeight = 48;
     public static int horizon = 8;
     public static float upAndDownRate = 16f;
+    public static int treeDensity = 2;
 
     public Vector2Int chunkPos;
     private Material mate;
@@ -54,7 +55,7 @@ public class Chunk : MonoBehaviour
             {
                 Vector3 targetPos = pos + transform.position;
                 targetPos += new Vector3(0.5f, 0.5f, 0.5f);
-                Vector3 box = new Vector3(0.5f, 0.5f, 0.5f);
+                Vector3 box = new Vector3(0.49f, 0.49f, 0.49f);
                 if (Physics.CheckBox(targetPos, box, Quaternion.identity, LayerMask.GetMask("Player"))) return false;
             }
             block.blockType = blockType;
@@ -92,6 +93,71 @@ public class Chunk : MonoBehaviour
                     else
                     {
                         blocks[x, y, z] = new Block(BlockType.Stone, this, pos);
+                    }
+                }
+            }
+        }
+
+        int treeCount = Random.Range(0, treeDensity * 2);
+        for (int i = 0; i < treeCount; i++)
+        {
+            int x = Random.Range(2, chunkSize - 2);
+            int z = Random.Range(2, chunkSize - 2);
+            for (int y = chunkHeight - 1; y >= 0; y--)
+            {
+                if (blocks[x, y, z].blockType == BlockType.Grass)
+                {
+                    CreateTree(new Vector3(x, y + 1, z));
+                    break;
+                }
+            }
+        }
+    }
+
+    private void CreateTree(Vector3 pos)
+    {
+        int height = Random.Range(3, 6);
+        for (int y = 0; y < height; y++)
+        {
+            if (pos.y + y < chunkHeight)
+            {
+                blocks[(int)pos.x, (int)pos.y + y, (int)pos.z].blockType = BlockType.Wood;
+            }
+        }
+        for (int x = -2; x <= 2; x++)
+        {
+            for (int y = height - 2; y <= height - 1; y++)
+            {
+                for (int z = -2; z <= 2; z++)
+                {
+                    if (Mathf.Abs(x) + Mathf.Abs(z) == 4 && Random.Range(0, 5) == 0) // 随机生成稀疏的叶子
+                        continue;
+                    if (pos.y + y < chunkHeight)
+                    {
+                        if (blocks[(int)pos.x + x, (int)pos.y + y, (int)pos.z + z].blockType == BlockType.Air)
+                        {
+                            blocks[(int)pos.x + x, (int)pos.y + y, (int)pos.z + z].blockType = BlockType.Leaves;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = 0; y <= 1; y++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    if (x != 0 && z != 0) continue; // 只在树干周围生成叶子
+                    if (y == 1 && Random.Range(0, 8) == 0) // 随机生成稀疏的叶子
+                        continue;
+                    if (pos.y + height + y < chunkHeight)
+                    {
+                        if (blocks[(int)pos.x + x, (int)pos.y + y + height, (int)pos.z + z].blockType == BlockType.Air)
+                        {
+                            blocks[(int)pos.x + x, (int)pos.y + y + height, (int)pos.z + z].blockType = BlockType.Leaves;
+                        }
                     }
                 }
             }

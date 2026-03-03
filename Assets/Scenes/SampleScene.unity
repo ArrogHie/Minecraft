@@ -444,9 +444,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.1
-  m_Height: 0.35
+  m_Height: 0
   m_Direction: 1
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Center: {x: 0, y: 0.09, z: 0}
 --- !u!1 &231581660
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,7 +2121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1399369182}
   - component: {fileID: 1399369183}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: JumpTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

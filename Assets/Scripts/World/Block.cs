@@ -7,7 +7,7 @@ public enum BlockType
     Grass,
     Stone,
     Wood,
-    Leaf,
+    Leaves,
     Cobblestone
 }
 
@@ -164,6 +164,23 @@ public class Block
                 uv1 = blockUVs[(int)BlockFaceType.GrassSide, 1];
                 uv2 = blockUVs[(int)BlockFaceType.GrassSide, 2];
                 uv3 = blockUVs[(int)BlockFaceType.GrassSide, 3];
+            }
+        }
+        else if (blockType == BlockType.Wood)
+        {
+            if (side == CubeSide.Top || side == CubeSide.Bottom)
+            {
+                uv0 = blockUVs[(int)BlockFaceType.WoodTop, 0];
+                uv1 = blockUVs[(int)BlockFaceType.WoodTop, 1];
+                uv2 = blockUVs[(int)BlockFaceType.WoodTop, 2];
+                uv3 = blockUVs[(int)BlockFaceType.WoodTop, 3];
+            }
+            else
+            {
+                uv0 = blockUVs[(int)BlockFaceType.WoodSide, 0];
+                uv1 = blockUVs[(int)BlockFaceType.WoodSide, 1];
+                uv2 = blockUVs[(int)BlockFaceType.WoodSide, 2];
+                uv3 = blockUVs[(int)BlockFaceType.WoodSide, 3];
             }
         }
         else if (blockType != BlockType.Air)

@@ -72,6 +72,23 @@ public class DroppedItem : MonoBehaviour
                 uv3 = blockUVs[(int)BlockFaceType.GrassSide, 3];
             }
         }
+        else if (blockType == BlockType.Wood)
+        {
+            if (side == CubeSide.Top || side == CubeSide.Bottom)
+            {
+                uv0 = blockUVs[(int)BlockFaceType.WoodTop, 0];
+                uv1 = blockUVs[(int)BlockFaceType.WoodTop, 1];
+                uv2 = blockUVs[(int)BlockFaceType.WoodTop, 2];
+                uv3 = blockUVs[(int)BlockFaceType.WoodTop, 3];
+            }
+            else
+            {
+                uv0 = blockUVs[(int)BlockFaceType.WoodSide, 0];
+                uv1 = blockUVs[(int)BlockFaceType.WoodSide, 1];
+                uv2 = blockUVs[(int)BlockFaceType.WoodSide, 2];
+                uv3 = blockUVs[(int)BlockFaceType.WoodSide, 3];
+            }
+        }
         else if (blockType != BlockType.Air)
         {
             BlockFaceType faceType = (BlockFaceType)System.Enum.Parse(typeof(BlockFaceType), blockType.ToString());
