@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour
     public Image window;
     public List<InventorySlot> slots;
     public Transform itemParent;
+    public GameObject itemPrefeb;
 
     public bool isOpen = false;
 
@@ -131,5 +132,35 @@ public class Inventory : MonoBehaviour
             item.slot = slot;
             item.transform.position = slot.transform.position;
         }
+    }
+
+    public void Pickup(BlockType type)
+    {
+        InventorySlot targetSlot = null;
+        foreach(InventorySlot slot in slots)
+        {
+            if(slot.item== null)
+            {
+                if(targetSlot == null) targetSlot = slot;
+                continue;
+            }
+            if (slot.item.itemName == type.ToString() && slot.item.ammount < 64)
+            {
+                slot.item.IncreaseAmmount(1);
+                return;
+            }
+        }
+
+        GameObject newItem = Instantiate(itemPrefeb, parent: itemParent);
+        Image img=newItem.GetComponent<Image>();
+        img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + type.ToString());
+        InventoryItem item = newItem.GetComponent<InventoryItem>();
+        item.itemName = type.ToString();
+
+        AddItemTriggers(item);
+        item.SetAmmount(1);
+        targetSlot.item = item;
+        item.slot = targetSlot;
+        item.transform.position = targetSlot.transform.position;
     }
 }

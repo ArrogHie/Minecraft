@@ -755,24 +755,8 @@ PrefabInstance:
       value: InvectoryItem
       objectReference: {fileID: 0}
     - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
       propertyPath: m_Delegates.Array.data[0].eventID
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -783,40 +767,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 885443866}
     - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Drag
       objectReference: {fileID: 0}
     - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
       propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: StartDrag
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Inventory, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Inventory, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 2101792832}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 2564536267010420977, guid: a52ee3352eaca964e89871983d76b670, type: 3}
-      propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: InventoryItem, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5441942502368632405, guid: a52ee3352eaca964e89871983d76b670, type: 3}
       propertyPath: slot
@@ -1676,6 +1632,7 @@ MonoBehaviour:
   - {fileID: 431303208}
   - {fileID: 235370643}
   itemParent: {fileID: 1658641733}
+  itemPrefeb: {fileID: 1703819885421892573, guid: a52ee3352eaca964e89871983d76b670, type: 3}
   isOpen: 0
 --- !u!1 &893423181
 GameObject:

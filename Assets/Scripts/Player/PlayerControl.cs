@@ -164,7 +164,8 @@ public class PlayerControl : Entity
 
     public void PickUp(BlockType type)
     {
-        Debug.Log("Pickup" + type);
+        //Debug.Log("Pickup" + type);
+        inventory.Pickup(type);
     }
 
     private void OnTriggerEnter(Collider other)
