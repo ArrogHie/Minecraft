@@ -8,6 +8,10 @@ public class DroppedItem : MonoBehaviour
     public float floatAmplitude = 0.1f; // 浮动幅度
     public float floatFrequency = 1f; // 浮动频率
 
+    private Rigidbody rb;
+    private bool isAttracting = false;
+    private Transform target;
+
     private BlockType blockType;
     public Material mate;
 
@@ -193,6 +197,26 @@ public class DroppedItem : MonoBehaviour
         CombineBlockMesh();
 
     }
+
+    private void StartAttract(Transform player)
+    {
+        isAttracting = true;
+        target = player;
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        var col = GetComponent<Collider>();
+        if(col != null) col.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("PickupTrigger"))
+        {
+            Debug.Log("Pickup");
+            StartAttract(other.transform.parent);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -205,5 +229,19 @@ public class DroppedItem : MonoBehaviour
         transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
         float newY = (Mathf.Sin(Time.time * floatFrequency) + 1) * floatAmplitude + 0.1f;
         transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
+
+        if(isAttracting)
+        {
+            Vector3 direction = (target.position - transform.position).normalized;
+            float distance = Vector3.Distance(transform.position, target.position);
+            float speed = Mathf.Lerp(5f, 20f, 1 - distance / 5f);
+            transform.position += direction * speed * Time.deltaTime;
+            if (distance < 0.5f)
+            {
+                target.GetComponent<PlayerControl>().PickUp(blockType);
+                Destroy(gameObject);
+            }
+
+        }
     }
 }

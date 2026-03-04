@@ -162,6 +162,11 @@ public class PlayerControl : Entity
         }
     }
 
+    public void PickUp(BlockType type)
+    {
+        Debug.Log("Pickup" + type);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         onGround++;
