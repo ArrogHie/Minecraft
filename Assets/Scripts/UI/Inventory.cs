@@ -25,6 +25,11 @@ public class Inventory : MonoBehaviour
             draggedItem.transform.SetSiblingIndex(draggedItem.transform.parent.childCount - 1);
             if (Input.GetButtonDown("Fire2"))
             {
+                if(draggedItem.ammount <= 1)
+                {
+                    Drop(draggedItem);
+                    return;
+                }
                 GameObject newItem = Instantiate(draggedItem.gameObject, parent: draggedItem.transform.parent);
                 AddItemTriggers(newItem.GetComponent<InventoryItem>());
                 newItem.GetComponent<InventoryItem>().SetAmmount(1);
@@ -51,8 +56,14 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void StartDrag(InventoryItem item)
+    public void StartDrag(InventoryItem item, BaseEventData data)
     {
+        PointerEventData pointerData = data as PointerEventData;
+        if(pointerData.button == PointerEventData.InputButton.Right)
+        {
+            return;
+        }
+
         draggedItem = item;
         if (item.slot) { item.slot.item = null; }
         item.slot = null;
@@ -64,7 +75,7 @@ public class Inventory : MonoBehaviour
         trigger.triggers.Clear();
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.PointerDown;
-        entry.callback.AddListener((eventData) => { StartDrag(item.GetComponent<InventoryItem>()); });
+        entry.callback.AddListener((eventData) => { StartDrag(item.GetComponent<InventoryItem>(),eventData); });
         trigger.triggers.Add(entry);
         entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.Drag;
