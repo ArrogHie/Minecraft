@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ItemTrigger : MonoBehaviour
 {
+    [Header("拾取延迟")]
+    public float pickupDelay = 1f; // 拾取延迟时间
+
     private Rigidbody rb;
     private bool isAttracting = false;
     private Transform target;
@@ -18,9 +21,10 @@ public class ItemTrigger : MonoBehaviour
         if (col != null) col.enabled = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         //Debug.Log(other.gameObject);
+        if (pickupDelay > 0f || isAttracting) return;
         if (other.CompareTag("PickupTrigger"))
         {
             //Debug.Log("Pickup");
@@ -37,6 +41,7 @@ public class ItemTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        pickupDelay -= Time.deltaTime;
         if (isAttracting)
         {
             Vector3 direction = (target.position - transform.position).normalized;

@@ -255,15 +255,7 @@ public class Block
     public bool TryBreak(float breakSecond)
     {
         breakTime = breakSecond;
-        //if (breakParticlePrefeb && !breakParticleInstance)
-        //{
-        //    Vector3 pos = this.position;
-        //    pos += new Vector3(0.5f, 0.5f, 0.5f);
-        //    breakParticleInstance = UnityEngine.Object.Instantiate(breakParticlePrefeb, pos, Quaternion.identity);
-        //    breakParticleInstance.transform.parent = owner.transform;
-        //}
-        //var emission = breakParticleInstance.emission;
-        //emission.enabled = true;
+
         if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
         {
             lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
@@ -282,8 +274,6 @@ public class Block
 
     private void Break()
     {
-        //if (breakParticleInstance) Destroy(breakParticleInstance);
-        //Destroy(gameObject);
         owner.BreakBlock(position, blockType);
     }
 }

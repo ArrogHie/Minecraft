@@ -218,7 +218,8 @@ public class Chunk : MonoBehaviour
     public void BreakBlock(Vector3 position, BlockType type)
     {
         SetBlockType(position, BlockType.Air);
-        if(type != BlockType.Leaves)
+        if(type == BlockType.Stone) type = BlockType.Cobblestone;
+        if (type != BlockType.Leaves)
         World.instance.CreatDrop(transform.position + position + new Vector3(0.5f, 0.5f, 0.5f), type);
     }
 
