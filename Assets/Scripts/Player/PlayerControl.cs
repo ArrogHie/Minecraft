@@ -5,6 +5,7 @@ public class PlayerControl : Entity
     public CameraSettings cameraSettings;
     public BlockType activeBlock;
     public Inventory inventory;
+    public Hotbar hotbar;
 
     private int onGround = 0;
     private float xRotation = 0f;
@@ -146,11 +147,14 @@ public class PlayerControl : Entity
     private void TryPressBlock()
     {
         if (targetBlock == null) { return; }
+        if (activeBlock == BlockType.Air) { return; }
+        
         Chunk targetChunk = targetBlock.owner;
         if (targetChunk == null) { return; }
 
         Vector3 normal = targetRaycastHit.normal;
-        if (!targetChunk.SetBlockType(targetBlock.position + normal, activeBlock)) // 跨越区块放置处理
+        bool placed = false;
+        if (!targetChunk.SetBlockType(targetBlock.position + normal, activeBlock))
         {
             Vector2Int pos = targetChunk.chunkPos;
             Vector2Int normal2 = new Vector2Int((int)normal.x, (int)normal.z);
@@ -158,7 +162,20 @@ public class PlayerControl : Entity
             Chunk trueChunk = World.instance.getChunk(pos);
             Vector3 pos3 = targetBlock.position + normal + targetChunk.transform.position;
             pos3 -= trueChunk.transform.position;
-            if (trueChunk != null) trueChunk.SetBlockType(pos3, activeBlock);
+            if (trueChunk != null) placed = trueChunk.SetBlockType(pos3, activeBlock);
+        }
+        else
+        {
+            placed = true;
+        }
+
+        if (placed)
+        {
+            if (hotbar != null)
+            {
+                hotbar.DecreaseSelectedItem();
+                hotbar.UpdateActiveBlock();
+            }
         }
     }
 

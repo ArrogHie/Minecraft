@@ -145,6 +145,9 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 捡起掉落物品时调用，将物品添加到背包
+    /// </summary>
     public void Pickup(BlockType type)
     {
         InventorySlot targetSlot = null;
