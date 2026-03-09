@@ -42,7 +42,7 @@ public class Block
     private float breakTime = 0f;
     private int lastBreakUV = 0;
 
-    public Vector3 position; // 相对坐标
+    public Vector3 position;
     public BlockType blockType;
     public Chunk owner;
 
@@ -115,6 +115,36 @@ public class Block
 
     void CreateFace(CubeSide side)
     {
+        CreateMesh(blockType, side, owner.transform, position, 1f, lastBreakUV);
+    }
+
+    public bool TryBreak(float breakSecond)
+    {
+        breakTime = breakSecond;
+
+        if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
+        {
+            lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
+            owner.RedrawChunk();
+        }
+
+        if (breakSecond > durabilitySecond)
+        {
+            breakTime = 0f;
+            lastBreakUV = 0;
+            Break();
+            return true;
+        }
+        return false;
+    }
+
+    private void Break()
+    {
+        owner.BreakBlock(position, blockType);
+    }
+
+    public static void CreateMesh(BlockType blockType, CubeSide side, Transform parent, Vector3 localPos, float size = 1f, int breakUV = 0)
+    {
         Mesh mesh = new Mesh();
         mesh.name = "S_Mesh" + side.ToString();
 
@@ -123,24 +153,25 @@ public class Block
         Vector2[] uvs = new Vector2[4];
         Vector3[] normals = new Vector3[4];
 
-        Vector3 p0 = new Vector3(0, 0, 1); // 左下前
-        Vector3 p1 = new Vector3(1, 0, 1); // 右下前
-        Vector3 p2 = new Vector3(1, 0, 0); // 右下后
-        Vector3 p3 = new Vector3(0, 0, 0); // 左下后
-        Vector3 p4 = new Vector3(0, 1, 1); // 左上前
-        Vector3 p5 = new Vector3(1, 1, 1); // 右上前
-        Vector3 p6 = new Vector3(1, 1, 0); // 右上后
-        Vector3 p7 = new Vector3(0, 1, 0); // 左上后
+        float s = size;
+        Vector3 p0 = new Vector3(0, 0, s);
+        Vector3 p1 = new Vector3(s, 0, s);
+        Vector3 p2 = new Vector3(s, 0, 0);
+        Vector3 p3 = new Vector3(0, 0, 0);
+        Vector3 p4 = new Vector3(0, s, s);
+        Vector3 p5 = new Vector3(s, s, s);
+        Vector3 p6 = new Vector3(s, s, 0);
+        Vector3 p7 = new Vector3(0, s, 0);
 
         Vector2 uv0 = blockUVs[0, 0];
         Vector2 uv1 = blockUVs[0, 1];
         Vector2 uv2 = blockUVs[0, 2];
         Vector2 uv3 = blockUVs[0, 3];
 
-        Vector2 suvs0 = healthUVs[lastBreakUV, 0];
-        Vector2 suvs1 = healthUVs[lastBreakUV, 1];
-        Vector2 suvs2 = healthUVs[lastBreakUV, 2];
-        Vector2 suvs3 = healthUVs[lastBreakUV, 3];
+        Vector2 suvs0 = healthUVs[breakUV, 0];
+        Vector2 suvs1 = healthUVs[breakUV, 1];
+        Vector2 suvs2 = healthUVs[breakUV, 2];
+        Vector2 suvs3 = healthUVs[breakUV, 3];
 
         if (blockType == BlockType.Grass)
         {
@@ -197,7 +228,7 @@ public class Block
             case CubeSide.Bottom:
                 vertices = new Vector3[] { p0, p1, p2, p3 };
                 normals = new Vector3[] { Vector3.down, Vector3.down, Vector3.down, Vector3.down };
-                uvs = new Vector2[] { uv0, uv1, uv3, uv2 }; // uv0:左下, uv1:右下, uv3:右上, uv2:左上
+                uvs = new Vector2[] { uv0, uv1, uv3, uv2 };
                 trangles = new int[] { 0, 2, 1, 0, 3, 2 };
                 break;
 
@@ -246,34 +277,33 @@ public class Block
         mesh.RecalculateBounds();
 
         GameObject quad = new GameObject("quad");
-        quad.transform.parent = owner.transform;
-        quad.transform.localPosition = position;
+        quad.transform.parent = parent;
+        quad.transform.localPosition = localPos;
         MeshFilter meshFilter = quad.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
     }
 
-    public bool TryBreak(float breakSecond)
+    public static void CombineMeshes(GameObject target, Material material)
     {
-        breakTime = breakSecond;
+        MeshFilter[] meshFilters = target.GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
-        if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
+        for (int i = 0; i < meshFilters.Length; i++)
         {
-            lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
-            owner.RedrawChunk();
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.parent.localToWorldMatrix.inverse * meshFilters[i].transform.localToWorldMatrix;
         }
 
-        if (breakSecond > durabilitySecond)
-        {
-            breakTime = 0f;
-            lastBreakUV = 0;
-            Break();
-            return true;
-        }
-        return false;
-    }
+        MeshFilter meshFilter = target.AddComponent<MeshFilter>();
+        meshFilter.mesh = new Mesh();
+        meshFilter.mesh.CombineMeshes(combine);
 
-    private void Break()
-    {
-        owner.BreakBlock(position, blockType);
+        MeshRenderer meshRenderer = target.AddComponent<MeshRenderer>();
+        meshRenderer.material = material;
+
+        foreach (Transform quad in target.transform)
+        {
+            UnityEngine.Object.Destroy(quad.gameObject);
+        }
     }
 }

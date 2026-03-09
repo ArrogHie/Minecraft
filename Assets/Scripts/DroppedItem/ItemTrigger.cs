@@ -41,7 +41,8 @@ public class ItemTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pickupDelay -= Time.deltaTime;
+        if (pickupDelay > 0f) 
+            pickupDelay -= Time.deltaTime;
         if (isAttracting)
         {
             Vector3 direction = (target.position - transform.position).normalized;

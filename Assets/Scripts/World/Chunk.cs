@@ -130,7 +130,7 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = -2; z <= 2; z++)
                 {
-                    if (Mathf.Abs(x) + Mathf.Abs(z) == 4 && Random.Range(0, 5) == 0) // 随机生成稀疏的叶子
+                    if (Mathf.Abs(x) + Mathf.Abs(z) == 4 && Random.Range(0, 5) == 0) // 锟斤拷锟斤拷锟斤拷锟较★拷锟斤拷叶锟斤拷
                         continue;
                     if (pos.y + y < chunkHeight)
                     {
@@ -149,8 +149,8 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = -1; z <= 1; z++)
                 {
-                    if (x != 0 && z != 0) continue; // 只在树干周围生成叶子
-                    if (y == 1 && Random.Range(0, 8) == 0) // 随机生成稀疏的叶子
+                    if (x != 0 && z != 0) continue; // 只锟斤拷锟斤拷锟斤拷锟斤拷围锟斤拷锟斤拷叶锟斤拷
+                    if (y == 1 && Random.Range(0, 8) == 0) // 锟斤拷锟斤拷锟斤拷锟较★拷锟斤拷叶锟斤拷
                         continue;
                     if (pos.y + height + y < chunkHeight)
                     {
@@ -174,26 +174,7 @@ public class Chunk : MonoBehaviour
 
     private void CombineBlockMesh()
     {
-        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-        for (int i = 0; i < meshFilters.Length; i++)
-        {
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.parent.localToWorldMatrix.inverse * meshFilters[i].transform.localToWorldMatrix;
-        }
-
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = new Mesh();
-        meshFilter.mesh.CombineMeshes(combine);
-
-        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = mate;
-
-        foreach (Transform quad in transform)
-        {
-            Destroy(quad.gameObject);
-        }
+        Block.CombineMeshes(gameObject, mate);
     }
 
     private void CreatCollider()
@@ -222,34 +203,4 @@ public class Chunk : MonoBehaviour
         if (type != BlockType.Leaves)
         World.instance.CreatDrop(transform.position + position + new Vector3(0.5f, 0.5f, 0.5f), type);
     }
-
-    //void OnDrawGizmos()
-    //{
-    //    // 设置侧面颜色（例如半透明红色，方便识别边界）
-    //    Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
-
-    //    Vector3 pos = transform.position;
-
-    //    // --- 1. 绘制 X 轴最小侧面 (Left) ---
-    //    // 位置在区块左侧中心，宽度近乎0，高度为chunkHeight，深度为chunkSize
-    //    Vector3 leftFaceCenter = pos + new Vector3(0, chunkHeight / 2.0f, chunkSize / 2.0f);
-    //    Gizmos.DrawCube(leftFaceCenter, new Vector3(0.01f, chunkHeight, chunkSize));
-
-    //    // --- 2. 绘制 X 轴最大侧面 (Right) ---
-    //    Vector3 rightFaceCenter = pos + new Vector3(chunkSize, chunkHeight / 2.0f, chunkSize / 2.0f);
-    //    Gizmos.DrawCube(rightFaceCenter, new Vector3(0.01f, chunkHeight, chunkSize));
-
-    //    // --- 3. 绘制 Z 轴最小侧面 (Back) ---
-    //    Vector3 backFaceCenter = pos + new Vector3(chunkSize / 2.0f, chunkHeight / 2.0f, 0);
-    //    Gizmos.DrawCube(backFaceCenter, new Vector3(chunkSize, chunkHeight, 0.01f));
-
-    //    // --- 4. 绘制 Z 轴最大侧面 (Front) ---
-    //    Vector3 frontFaceCenter = pos + new Vector3(chunkSize / 2.0f, chunkHeight / 2.0f, chunkSize);
-    //    Gizmos.DrawCube(frontFaceCenter, new Vector3(chunkSize, chunkHeight, 0.01f));
-
-    //    // 可选：画出边框线让边缘更清晰
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireCube(pos + new Vector3(chunkSize / 2f, chunkHeight / 2f, chunkSize / 2f),
-    //                        new Vector3(chunkSize, chunkHeight, chunkSize));
-    //}
 }
