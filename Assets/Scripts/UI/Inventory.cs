@@ -11,11 +11,32 @@ public class Inventory : MonoBehaviour
     public Transform itemParent;
     public GameObject itemPrefeb;
 
+    [Header("Crafting - 合成系统")]
+    public List<InventorySlot> craftingInputSlots;
+    public InventorySlot craftingOutputSlot;
+    public Image craftingOutputImage;
+    private CraftingRecipe currentRecipe;
+
     public bool isOpen = false;
 
     InventoryItem draggedItem;
+    private string[] lastCraftingInputs = new string[4];
+    private int[] lastCraftingAmounts = new int[4];
 
-    // Update is called once per frame
+    void Start()
+    {
+        InitializeCraftingSlots();
+    }
+
+    void InitializeCraftingSlots()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            lastCraftingInputs[i] = null;
+            lastCraftingAmounts[i] = 0;
+        }
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E)) { ToggleInventory(); }
@@ -30,6 +51,7 @@ public class Inventory : MonoBehaviour
                     Drop(draggedItem);
                     return;
                 }
+
                 GameObject newItem = Instantiate(draggedItem.gameObject, parent: draggedItem.transform.parent);
                 AddItemTriggers(newItem.GetComponent<InventoryItem>());
                 newItem.GetComponent<InventoryItem>().SetAmmount(1);
@@ -38,6 +60,143 @@ public class Inventory : MonoBehaviour
             }
             if (Input.GetButtonUp("Fire1")) { Drop(draggedItem); }
         }
+
+        if (isOpen)
+        {
+            CheckCraftingInput();
+        }
+    }
+
+    /// <summary>
+    /// 检查合成输入是否有变化
+    /// </summary>
+    void CheckCraftingInput()
+    {
+        bool changed = false;
+        string[] currentInputs = new string[4];
+        int[] currentAmounts = new int[4];
+
+        for (int i = 0; i < craftingInputSlots.Count; i++)
+        {
+            InventorySlot slot = craftingInputSlots[i];
+            if (slot != null && slot.item != null)
+            {
+                currentInputs[i] = slot.item.itemName;
+                currentAmounts[i] = slot.item.ammount;
+            }
+            else
+            {
+                currentInputs[i] = null;
+                currentAmounts[i] = 0;
+            }
+
+            if (currentInputs[i] != lastCraftingInputs[i] || currentAmounts[i] != lastCraftingAmounts[i])
+            {
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                lastCraftingInputs[i] = currentInputs[i];
+                lastCraftingAmounts[i] = currentAmounts[i];
+            }
+            CheckCrafting();
+        }
+    }
+
+    /// <summary>
+    /// 检查是否有匹配的配方
+    /// </summary>
+    void CheckCrafting()
+    {
+        currentRecipe = RecipeManager.instance.FindRecipe(lastCraftingInputs, lastCraftingAmounts);
+
+        if (currentRecipe != null)
+        {
+            craftingOutputImage.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + currentRecipe.resultItem);
+            craftingOutputImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            craftingOutputImage.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// 点击合成输出槽时调用
+    /// </summary>
+    public void OnCraftingOutputClick()
+    {
+        if (currentRecipe == null) return;
+        if (craftingOutputImage == null || !craftingOutputImage.gameObject.activeSelf) return;
+
+        Craft();
+    }
+
+    /// <summary>
+    /// 执行合成
+    /// </summary>
+    void Craft()
+    {
+        // 消耗输入物品
+        for (int i = 0; i < craftingInputSlots.Count; i++)
+        {
+            InventorySlot slot = craftingInputSlots[i];
+            if (slot != null && slot.item != null)
+            {
+                string required = currentRecipe.inputItems[i];
+                int requiredAmount = currentRecipe.inputAmounts[i];
+
+                if (required != null && slot.item.itemName == required)
+                {
+                    slot.item.IncreaseAmmount(-requiredAmount);
+                    if (slot.item.ammount <= 0)
+                    {
+                        Destroy(slot.item.gameObject);
+                        slot.item = null;
+                    }
+                }
+            }
+        }
+
+        // 生成产物
+        InventoryItem item = CreateInventoryItem(currentRecipe.resultItem, currentRecipe.resultAmount, Vector3.zero, null);
+        
+        // 直接将产物设为拖拽状态
+        draggedItem = item;
+        if (item.slot) { item.slot.item = null; }
+        item.slot = null;
+
+        CheckCrafting();
+    }
+
+    InventoryItem CreateInventoryItem(string itemName, int amount, Vector3 position, InventorySlot slot)
+    {
+        GameObject newItem = Instantiate(itemPrefeb, parent: itemParent);
+        Image img = newItem.GetComponent<Image>();
+        img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + itemName);
+        
+        InventoryItem item = newItem.GetComponent<InventoryItem>();
+        item.itemName = itemName;
+        
+        AddItemTriggers(item);
+        item.SetAmmount(amount);
+        
+        if (slot != null)
+        {
+            slot.item = item;
+            item.slot = slot;
+            item.transform.position = slot.transform.position;
+        }
+        else if (position != Vector3.zero)
+        {
+            newItem.transform.position = position;
+        }
+        
+        return item;
     }
 
     void ToggleInventory()
@@ -69,6 +228,9 @@ public class Inventory : MonoBehaviour
         item.slot = null;
     }
 
+    /// <summary>
+    /// 为物品添加拖拽事件触发器
+    /// </summary>
     void AddItemTriggers(InventoryItem item)
     {
         EventTrigger trigger = item.gameObject.GetComponent<EventTrigger>();
@@ -102,6 +264,7 @@ public class Inventory : MonoBehaviour
     {
         if (draggedItem == item) { draggedItem = null; }
 
+        // 查找最近的普通背包槽
         float minDistance = 1000f;
         InventorySlot slot = null;
         foreach (InventorySlot s in slots)
@@ -114,7 +277,20 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        if (slot.item)
+        if (slot == null)
+        {
+            foreach (InventorySlot s in craftingInputSlots)
+            {
+                float distance = Vector3.Distance(item.transform.position, s.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    slot = s;
+                }
+            }
+        }
+
+        if (slot != null && slot.item)
         {
             if (slot.item.itemName == item.itemName)
             {
@@ -132,12 +308,15 @@ public class Inventory : MonoBehaviour
             else
             {
                 slot = item.lastSlot;
-                slot.item = item;
-                item.slot = slot;
-                item.transform.position = slot.transform.position;
+                if (slot != null)
+                {
+                    slot.item = item;
+                    item.slot = slot;
+                    item.transform.position = slot.transform.position;
+                }
             }
         }
-        else
+        else if (slot != null)
         {
             slot.item = item;
             item.slot = slot;
@@ -145,36 +324,23 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 捡起掉落物品时调用，将物品添加到背包
-    /// </summary>
     public void Pickup(BlockType type)
     {
         InventorySlot targetSlot = null;
+        
         foreach(InventorySlot slot in slots)
         {
-            if(slot.item== null)
-            {
-                if(targetSlot == null) targetSlot = slot;
-                continue;
-            }
-            if (slot.item.itemName == type.ToString() && slot.item.ammount < 64)
+            if (slot.item != null && slot.item.itemName == type.ToString() && slot.item.ammount < 64)
             {
                 slot.item.IncreaseAmmount(1);
                 return;
             }
+            if (slot.item == null && targetSlot == null)
+            {
+                targetSlot = slot;
+            }
         }
 
-        GameObject newItem = Instantiate(itemPrefeb, parent: itemParent);
-        Image img=newItem.GetComponent<Image>();
-        img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + type.ToString());
-        InventoryItem item = newItem.GetComponent<InventoryItem>();
-        item.itemName = type.ToString();
-
-        AddItemTriggers(item);
-        item.SetAmmount(1);
-        targetSlot.item = item;
-        item.slot = targetSlot;
-        item.transform.position = targetSlot.transform.position;
+        CreateInventoryItem(type.ToString(), 1, Vector3.zero, targetSlot);
     }
 }

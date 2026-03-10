@@ -8,7 +8,12 @@ public enum BlockType
     Stone,
     Wood,
     Leaves,
-    Cobblestone
+    Cobblestone,
+    Planks,
+    Stick,
+    CraftingTable,
+    Coal,
+    Torch
 }
 
 public enum CubeSide
@@ -31,7 +36,12 @@ public enum BlockFaceType
     Sand,
     Stone,
     Leaves,
-    Cobblestone
+    Cobblestone,
+    Planks,
+    Stick,
+    CraftingTable,
+    Coal,
+    Torch
 }
 
 public class Block
@@ -56,7 +66,12 @@ public class Block
         /*Sand*/        {new Vector2(0.25f,0.50f),new Vector2(0.50f,0.50f),new Vector2(0.25f,0.75f),new Vector2(0.50f,0.75f)},
         /*Stone*/       {new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f),new Vector2(0.50f,0.75f),new Vector2(0.75f,0.75f)},
         /*Leaves*/      {new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f),new Vector2(0.75f,0.75f),new Vector2(1.00f,0.75f)},
-        /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)}
+        /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)},
+        /*Planks*/      {new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f),new Vector2(0.25f,0.50f),new Vector2(0.50f,0.50f)},
+        /*Stick*/       {new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f),new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f)},
+        /*CraftingTable*/ {new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f),new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f)},
+        /*Coal*/         {new Vector2(0.00f,0.00f),new Vector2(0.25f,0.00f),new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f)},
+        /*Torch*/        {new Vector2(0.25f,0.00f),new Vector2(0.50f,0.00f),new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f)}
     };
 
     public static Vector2[,] healthUVs =
