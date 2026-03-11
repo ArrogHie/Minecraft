@@ -5,7 +5,7 @@
 This is a Unity-based Minecraft clone. The project uses Unity 2022.3.62f3c1 and contains:
 - Voxel-based world generation with chunk system
 - First-person player controller
-- Inventory and hotbar UI system
+- Inventory and hotbar UI system with crafting
 - Block placement and destruction mechanics
 
 ## Build & Test Commands
@@ -22,8 +22,6 @@ Unity.exe -buildTarget WindowsStandalone -quit -batchmode -projectPath "D:\~~~un
 
 ### Running Tests
 
-This project uses Unity Test Framework. Tests should be placed in `Assets/Tests/` or marked with `[UnityTest]` attribute.
-
 ```bash
 # Run all tests via Unity Test Runner (GUI)
 # Window > General > Test Runner > Run All
@@ -31,10 +29,6 @@ This project uses Unity Test Framework. Tests should be placed in `Assets/Tests/
 # Command-line test execution
 Unity.exe -runTests -projectPath "D:\~~~unity\Minecraft" -testResults results.xml
 ```
-
-For running a **single test**:
-1. In Unity Editor: Test Runner window > right-click test > Run
-2. Or use `[UnityTest]` attribute with `[Test]` for specific test methods
 
 ## Code Style Guidelines
 
@@ -56,16 +50,9 @@ Assets/Scripts/
 ├── World/           # World generation (World.cs, Chunk.cs, Block.cs)
 ├── Player/          # Player controller and related
 ├── DroppedItem/     # Item pickup system
-├── UI/              # Inventory, hotbar, slots
+├── UI/              # Inventory, hotbar, crafting, slots
 └── Entity.cs        # Base class for entities
 ```
-
-### Class Structure
-
-- **Inherit from `MonoBehaviour`** for Unity components
-- **Use `[Serializable]`** for nested classes needing inspector exposure
-- **Group related functionality** into dedicated classes
-- **Follow single responsibility** - one class per logical concern
 
 ### Formatting Rules
 
@@ -95,21 +82,9 @@ using UnityEngine;
 using System.Collections;           // Coroutines
 using System.Collections.Generic;    // Lists, dictionaries
 using UnityEngine.UI;                // UI components
+using UnityEngine.EventSystems;      // UI events
 
 // Avoid unnecessary imports
-```
-
-### Type Usage
-
-```csharp
-// Preferred:
-Vector3 position
-Vector2Int chunkPos
-BlockType blockType
-Rigidbody rigidbody
-
-// Not:
-System.Windows.Vector3   // Use Unity types
 ```
 
 ### Error Handling
@@ -117,27 +92,6 @@ System.Windows.Vector3   // Use Unity types
 - **Return null/bool** instead of throwing exceptions for expected failures
 - **Use Debug.Log()** for diagnostic output (existing code has commented debug logs)
 - **Check null explicitly** with `== null` rather than `?.` operator (matches existing code style)
-
-```csharp
-// Good patterns from codebase:
-if (chunks.ContainsKey(pos))
-{
-    return chunks[pos];
-}
-return null;
-
-if (targetBlock == null)
-{
-    breakSeconds = 0f;
-    return;
-}
-```
-
-### Comments
-
-- **Minimal comments** - existing code has very few comments
-- **No header comments** on methods or classes
-- **Comment out debug code** rather than removing (e.g., `//Debug.Log()`)
 
 ### Unity-Specific Patterns
 
@@ -163,7 +117,33 @@ private void Update()
 }
 ```
 
-## Common Patterns in This Codebase
+## Block System
+
+### BlockType Enum (Assets/Scripts/World/Block.cs:3-17)
+
+```csharp
+public enum BlockType
+{
+    Air,
+    Dirt,
+    Grass,
+    Stone,
+    Wood,
+    Leaves,
+    Cobblestone,
+    Planks,
+    Stick,
+    CraftingTable,
+    Coal,
+    Torch
+}
+```
+
+### BlockFaceType Enum (Assets/Scripts/World/Block.cs:29-45)
+
+Maps to texture UV coordinates for block faces.
+
+## Common Patterns
 
 ### Singleton Pattern
 ```csharp
@@ -176,7 +156,6 @@ public class World : MonoBehaviour
 
 ### Block Mesh Generation
 ```csharp
-// Blocks create individual faces, then combine meshes for performance
 Block.CreateMesh(blockType, side, transform, offset, size);
 Block.CombineMeshes(gameObject, material);
 ```
@@ -192,11 +171,32 @@ if (Physics.Raycast(ray, out hit, 5f, LayerMask.GetMask("Chunk")))
 
 ### Inventory Drag & Drop
 ```csharp
-// Uses Unity EventSystem for drag handling
 EventTrigger.Entry entry = new EventTrigger.Entry();
 entry.eventID = EventTriggerType.PointerDown;
 entry.callback.AddListener((eventData) => { /* handler */ });
 ```
+
+## Crafting System
+
+### RecipeManager (Assets/Scripts/UI/RecipeManager.cs)
+- Singleton pattern for global access via `RecipeManager.instance`
+- `FindRecipe(string[] inputItems, int[] inputAmounts)` finds matching recipe
+- Currently hardcoded recipes in `InitializeRecipes()`, planned to be replaced with Luban config
+
+### CraftingRecipe (Assets/Scripts/UI/CraftingRecipe.cs)
+- `inputItems`: 4-element array for 2x2 crafting grid
+- `inputAmounts`: corresponding item amounts
+- `Matches()` checks if input matches recipe
+
+### Current Recipes
+- Wood (any position) → 4 Planks
+
+### Inventory Integration (Assets/Scripts/UI/Inventory.cs)
+- 4 crafting input slots: `craftingInputSlots`
+- 1 crafting output slot: `craftingOutputSlot`
+- `CheckCraftingInput()` monitors slot changes
+- `OnCraftingOutputClick()` triggered when clicking output
+- `Craft()` consumes inputs and produces output
 
 ## Important Notes
 
@@ -210,6 +210,6 @@ entry.callback.AddListener((eventData) => { /* handler */ });
 
 When adding new features:
 1. Test block placement/destruction manually in Play mode
-2. Test inventory UI interactions
+2. Test inventory UI interactions including crafting
 3. Test chunk loading/unloading at chunk boundaries
 4. Verify no null reference errors in console

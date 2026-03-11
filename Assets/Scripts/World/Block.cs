@@ -38,10 +38,9 @@ public enum BlockFaceType
     Leaves,
     Cobblestone,
     Planks,
-    Stick,
-    CraftingTable,
-    Coal,
-    Torch
+    CraftingTableTop,
+    CraftingTableSide1,
+    CraftingTableSide2
 }
 
 public class Block
@@ -58,30 +57,34 @@ public class Block
 
     public static Vector2[,] blockUVs =
     {
-        /*Dirt*/        {new Vector2(0.00f,0.75f),new Vector2(0.25f,0.75f),new Vector2(0.00f,1.00f),new Vector2(0.25f,1.00f)},
-        /*GrassSide*/   {new Vector2(0.25f,0.75f),new Vector2(0.50f,0.75f),new Vector2(0.25f,1.00f),new Vector2(0.50f,1.00f)},
-        /*GrassTop*/    {new Vector2(0.50f,0.75f),new Vector2(0.75f,0.75f),new Vector2(0.50f,1.00f),new Vector2(0.75f,1.00f)},
-        /*WoodSide*/    {new Vector2(0.75f,0.75f),new Vector2(1.00f,0.75f),new Vector2(0.75f,1.00f),new Vector2(1.00f,1.00f)},
-        /*WoodTop*/     {new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f),new Vector2(0.00f,0.75f),new Vector2(0.25f,0.75f)},
-        /*Sand*/        {new Vector2(0.25f,0.50f),new Vector2(0.50f,0.50f),new Vector2(0.25f,0.75f),new Vector2(0.50f,0.75f)},
-        /*Stone*/       {new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f),new Vector2(0.50f,0.75f),new Vector2(0.75f,0.75f)},
-        /*Leaves*/      {new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f),new Vector2(0.75f,0.75f),new Vector2(1.00f,0.75f)},
-        /*Cobblestone*/ {new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f),new Vector2(0.00f,0.50f),new Vector2(0.25f,0.50f)},
-        /*Planks*/      {new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f),new Vector2(0.25f,0.50f),new Vector2(0.50f,0.50f)},
-        /*Stick*/       {new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f),new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f)},
-        /*CraftingTable*/ {new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f),new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f)},
-        /*Coal*/         {new Vector2(0.00f,0.00f),new Vector2(0.25f,0.00f),new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f)},
-        /*Torch*/        {new Vector2(0.25f,0.00f),new Vector2(0.50f,0.00f),new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f)}
+        /*Dirt*/        {new Vector2(0.1251f,0.9376f),new Vector2(0.1874f,0.9376f),new Vector2(0.1251f,0.9999f),new Vector2(0.1874f,0.9999f)},
+        /*GrassSide*/   {new Vector2(0.1876f,0.9376f),new Vector2(0.2499f,0.9376f),new Vector2(0.1876f,0.9999f),new Vector2(0.2499f,0.9999f)},
+        /*GrassTop*/    {new Vector2(0.0001f,0.9376f),new Vector2(0.0624f,0.9376f),new Vector2(0.0001f,0.9999f),new Vector2(0.0624f,0.9999f)},
+        /*WoodSide*/    {new Vector2(0.2501f,0.8751f),new Vector2(0.3124f,0.8751f),new Vector2(0.2501f,0.9374f),new Vector2(0.3124f,0.9374f)},
+        /*WoodTop*/     {new Vector2(0.3126f,0.8751f),new Vector2(0.3749f,0.8751f),new Vector2(0.3126f,0.9374f),new Vector2(0.3749f,0.9374f)},
+        /*Sand*/        {new Vector2(0.1251f,0.8751f),new Vector2(0.1874f,0.8751f),new Vector2(0.1251f,0.9374f),new Vector2(0.1874f,0.9374f)},
+        /*Stone*/       {new Vector2(0.0626f,0.9376f),new Vector2(0.1249f,0.9376f),new Vector2(0.0626f,0.9999f),new Vector2(0.1249f,0.9999f)},
+        /*Leaves*/      {new Vector2(0.2501f,0.7501f),new Vector2(0.3124f,0.7501f),new Vector2(0.2501f,0.8124f),new Vector2(0.3124f,0.8124f)},
+        /*Cobblestone*/ {new Vector2(0.0001f,0.8751f),new Vector2(0.0624f,0.8751f),new Vector2(0.0001f,0.9374f),new Vector2(0.0624f,0.9374f)},
+        /*Planks*/      {new Vector2(0.2501f,0.9376f),new Vector2(0.3124f,0.9376f),new Vector2(0.2501f,0.9999f),new Vector2(0.3124f,0.9999f)},
+        /*CraftingTableTop*/   {new Vector2(0.6876f,0.8126f),new Vector2(0.7499f,0.8126f),new Vector2(0.6876f,0.8749f),new Vector2(0.7499f,0.8749f)},
+        /*CraftingTableSide1*/ {new Vector2(0.6876f,0.7501f),new Vector2(0.7499f,0.7501f),new Vector2(0.6876f,0.8124f),new Vector2(0.7499f,0.8124f)},
+        /*CraftingTableSide2*/ {new Vector2(0.7501f,0.7501f),new Vector2(0.8124f,0.7501f),new Vector2(0.7501f,0.8124f),new Vector2(0.8124f,0.8124f)}
     };
 
     public static Vector2[,] healthUVs =
     {
-        {new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f),new Vector2(0.50f,0.50f),new Vector2(0.75f,0.50f)},
-        {new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f),new Vector2(0.75f,0.50f),new Vector2(1.00f,0.50f)},
-        {new Vector2(0.00f,0.00f),new Vector2(0.25f,0.00f),new Vector2(0.00f,0.25f),new Vector2(0.25f,0.25f)},
-        {new Vector2(0.25f,0.00f),new Vector2(0.50f,0.00f),new Vector2(0.25f,0.25f),new Vector2(0.50f,0.25f)},
-        {new Vector2(0.50f,0.00f),new Vector2(0.75f,0.00f),new Vector2(0.50f,0.25f),new Vector2(0.75f,0.25f)},
-        {new Vector2(0.75f,0.00f),new Vector2(1.00f,0.00f),new Vector2(0.75f,0.25f),new Vector2(1.00f,0.25f)}
+        {new Vector2(0.2500f,0.2500f),new Vector2(0.2510f,0.25f),new Vector2(0.2500f,0.2510f),new Vector2(0.2510f,0.2510f)},
+        {new Vector2(0.0000f,0.0000f),new Vector2(0.0625f,0.0000f),new Vector2(0.0000f,0.0625f),new Vector2(0.0625f,0.0625f)},
+        {new Vector2(0.0625f,0.0000f),new Vector2(0.1250f,0.0000f),new Vector2(0.0625f,0.0625f),new Vector2(0.1250f,0.0625f)},
+        {new Vector2(0.1250f,0.0000f),new Vector2(0.1875f,0.0000f),new Vector2(0.1250f,0.0625f),new Vector2(0.1875f,0.0625f)},
+        {new Vector2(0.1875f,0.0000f),new Vector2(0.2500f,0.0000f),new Vector2(0.1875f,0.0625f),new Vector2(0.2500f,0.0625f)},
+        {new Vector2(0.2500f,0.0000f),new Vector2(0.3125f,0.0000f),new Vector2(0.2500f,0.0625f),new Vector2(0.3125f,0.0625f)},
+        {new Vector2(0.3125f,0.0000f),new Vector2(0.3750f,0.0000f),new Vector2(0.3125f,0.0625f),new Vector2(0.3750f,0.0625f)},
+        {new Vector2(0.3750f,0.0000f),new Vector2(0.4375f,0.0000f),new Vector2(0.3750f,0.0625f),new Vector2(0.4375f,0.0625f)},
+        {new Vector2(0.4375f,0.0000f),new Vector2(0.5000f,0.0000f),new Vector2(0.4375f,0.0625f),new Vector2(0.5000f,0.0625f)},
+        {new Vector2(0.5000f,0.0000f),new Vector2(0.5625f,0.0000f),new Vector2(0.5000f,0.0625f),new Vector2(0.5625f,0.0625f)},
+        {new Vector2(0.5625f,0.0000f),new Vector2(0.6250f,0.0000f),new Vector2(0.5625f,0.0625f),new Vector2(0.6250f,0.0625f)}
     };
 
     public Block(BlockType type, Chunk owner, Vector3 pos)
@@ -113,7 +116,6 @@ public class Block
     public void CreateCube()
     {
         if (blockType == BlockType.Air) return;
-
         if (!owner.CheckFoxVoxel(position + Vector3.up))
             CreateFace(CubeSide.Top);
         if (!owner.CheckFoxVoxel(position + Vector3.down))
@@ -137,9 +139,9 @@ public class Block
     {
         breakTime = breakSecond;
 
-        if (Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5) != lastBreakUV)
+        if (Mathf.Clamp((int)(10.9f * breakTime / durabilitySecond), 0, 10) != lastBreakUV)
         {
-            lastBreakUV = Mathf.Clamp((int)(5.9f * breakTime / durabilitySecond), 0, 5);
+            lastBreakUV = Mathf.Clamp((int)(10.9f * breakTime / durabilitySecond), 0, 10);
             owner.RedrawChunk();
         }
 
@@ -163,10 +165,10 @@ public class Block
         Mesh mesh = new Mesh();
         mesh.name = "S_Mesh" + side.ToString();
 
-        Vector3[] vertices = new Vector3[4];
-        int[] trangles = new int[6];
-        Vector2[] uvs = new Vector2[4];
-        Vector3[] normals = new Vector3[4];
+        Vector3[] vertices = null;
+        int[] trangles = null;
+        Vector2[] uvs = null;
+        Vector3[] normals = null;
 
         float s = size;
         Vector3 p0 = new Vector3(0, 0, s);
@@ -227,6 +229,30 @@ public class Block
                 uv1 = blockUVs[(int)BlockFaceType.WoodSide, 1];
                 uv2 = blockUVs[(int)BlockFaceType.WoodSide, 2];
                 uv3 = blockUVs[(int)BlockFaceType.WoodSide, 3];
+            }
+        }
+        else if (blockType == BlockType.CraftingTable)
+        {
+            if (side == CubeSide.Top || side == CubeSide.Bottom)
+            {
+                uv0 = blockUVs[(int)BlockFaceType.CraftingTableTop, 0];
+                uv1 = blockUVs[(int)BlockFaceType.CraftingTableTop, 1];
+                uv2 = blockUVs[(int)BlockFaceType.CraftingTableTop, 2];
+                uv3 = blockUVs[(int)BlockFaceType.CraftingTableTop, 3];
+            }
+            else if (side == CubeSide.Front || side == CubeSide.Back)
+            {
+                uv0 = blockUVs[(int)BlockFaceType.CraftingTableSide1, 0];
+                uv1 = blockUVs[(int)BlockFaceType.CraftingTableSide1, 1];
+                uv2 = blockUVs[(int)BlockFaceType.CraftingTableSide1, 2];
+                uv3 = blockUVs[(int)BlockFaceType.CraftingTableSide1, 3];
+            }
+            else
+            {
+                uv0 = blockUVs[(int)BlockFaceType.CraftingTableSide2, 0];
+                uv1 = blockUVs[(int)BlockFaceType.CraftingTableSide2, 1];
+                uv2 = blockUVs[(int)BlockFaceType.CraftingTableSide2, 2];
+                uv3 = blockUVs[(int)BlockFaceType.CraftingTableSide2, 3];
             }
         }
         else if (blockType != BlockType.Air)

@@ -193,14 +193,30 @@ public class Chunk : MonoBehaviour
     public bool CheckFoxVoxel(Vector3 pos)
     {
         if (pos.x < 0 || pos.x >= chunkSize || pos.y < 0 || pos.y >= chunkHeight || pos.z < 0 || pos.z >= chunkSize) return false;
-        return blocks[(int)pos.x, (int)pos.y, (int)pos.z].blockType != BlockType.Air;
+        BlockType type = blocks[(int)pos.x, (int)pos.y, (int)pos.z].blockType;
+        return type != BlockType.Air && type != BlockType.Leaves;
+    }
+
+    public bool HasLeafNeighbor(Vector3 pos)
+    {
+        Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+        foreach (Vector3 dir in directions)
+        {
+            Vector3 checkPos = pos + dir;
+            if (checkPos.x >= 0 && checkPos.x < chunkSize && checkPos.y >= 0 && checkPos.y < chunkHeight && checkPos.z >= 0 && checkPos.z < chunkSize)
+            {
+                if (blocks[(int)checkPos.x, (int)checkPos.y, (int)checkPos.z].blockType == BlockType.Leaves)
+                    return true;
+            }
+        }
+        return false;
     }
 
     public void BreakBlock(Vector3 position, BlockType type)
     {
         SetBlockType(position, BlockType.Air);
-        if(type == BlockType.Stone) type = BlockType.Cobblestone;
+        if (type == BlockType.Stone) type = BlockType.Cobblestone;
         if (type != BlockType.Leaves)
-        World.instance.CreatDrop(transform.position + position + new Vector3(0.5f, 0.5f, 0.5f), type);
+            World.instance.CreatDrop(transform.position + position + new Vector3(0.5f, 0.5f, 0.5f), type);
     }
 }
