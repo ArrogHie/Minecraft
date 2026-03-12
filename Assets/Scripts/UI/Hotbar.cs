@@ -77,7 +77,15 @@ public class Hotbar : MonoBehaviour
                     item.itemName = mainSlot.item.itemName;
                     item.SetAmmount(mainSlot.item.ammount);
                     Image img = newItem.GetComponent<Image>();
-                    img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + item.itemName);
+                    Sprite dynamicIcon = BlockIconGenerator.Instance != null ? BlockIconGenerator.Instance.GetIcon(item.itemName) : null;
+                    if (dynamicIcon != null)
+                    {
+                        img.sprite = dynamicIcon;
+                    }
+                    else
+                    {
+                        img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + item.itemName);
+                    }
                     hotbarSlot.item = item;
                     item.slot = hotbarSlot;
                 }

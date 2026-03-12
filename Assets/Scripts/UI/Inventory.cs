@@ -177,7 +177,15 @@ public class Inventory : MonoBehaviour
     {
         GameObject newItem = Instantiate(itemPrefeb, parent: itemParent);
         Image img = newItem.GetComponent<Image>();
-        img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + itemName);
+        Sprite dynamicIcon = BlockIconGenerator.Instance != null ? BlockIconGenerator.Instance.GetIcon(itemName) : null;
+        if (dynamicIcon != null)
+        {
+            img.sprite = dynamicIcon;
+        }
+        else
+        {
+            img.sprite = Resources.Load<Sprite>("Image/Imgs/Block/" + itemName);
+        }
         
         InventoryItem item = newItem.GetComponent<InventoryItem>();
         item.itemName = itemName;

@@ -335,11 +335,13 @@ public class Block
             combine[i].transform = meshFilters[i].transform.parent.localToWorldMatrix.inverse * meshFilters[i].transform.localToWorldMatrix;
         }
 
-        MeshFilter meshFilter = target.AddComponent<MeshFilter>();
+        MeshFilter meshFilter = target.GetComponent<MeshFilter>();
+        if(meshFilter == null) meshFilter = target.AddComponent<MeshFilter>();
         meshFilter.mesh = new Mesh();
         meshFilter.mesh.CombineMeshes(combine);
 
-        MeshRenderer meshRenderer = target.AddComponent<MeshRenderer>();
+        MeshRenderer meshRenderer=target.GetComponent<MeshRenderer>();
+        if (meshRenderer == null) meshRenderer = target.AddComponent<MeshRenderer>();
         meshRenderer.material = material;
 
         foreach (Transform quad in target.transform)
