@@ -8,8 +8,9 @@ public class DroppedItem : MonoBehaviour
 
     public BlockType blockType;
     public Material mate;
+    public Rigidbody rb;
 
-    public void Init(BlockType type)
+    public void Init(BlockType type, Vector3 velocity = default)
     {
         blockType = type;
         float size = 0.2f;
@@ -19,6 +20,12 @@ public class DroppedItem : MonoBehaviour
             Block.CreateMesh(blockType, side, transform, offset, size);
         }
         Block.CombineMeshes(gameObject, mate);
+
+        if (velocity != default)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.velocity = velocity;
+        }
     }
 
     // Start is called before the first frame update

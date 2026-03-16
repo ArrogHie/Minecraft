@@ -17,7 +17,7 @@ public class World : MonoBehaviour
 
     private int seed;
 
-    [Header("µôÂäÎï")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public GameObject dropPrefeb;
 
     private void Awake()
@@ -133,13 +133,12 @@ public class World : MonoBehaviour
         return null;
     }
 
-    public void CreatDrop(Vector3 position, BlockType type)
+    public void CreatDrop(Vector3 position, BlockType type, Vector3 velocity = default)
     {
-        //Debug.Log("Drop pos" + position);
         GameObject dropObj = Instantiate(dropPrefeb, position, Quaternion.identity);
         dropObj.name = "DropItem";
         DroppedItem droppedItem = dropObj.GetComponentInChildren<DroppedItem>();
-        droppedItem.Init(type);
+        droppedItem.Init(type, velocity);
     }
 
 }

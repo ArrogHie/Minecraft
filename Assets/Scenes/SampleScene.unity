@@ -642,7 +642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isCraftingSlot: 0
+  isCraftingSlot: 1
 --- !u!1 &375467949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,7 +1447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isCraftingSlot: 0
+  isCraftingSlot: 1
 --- !u!1 &644121369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,6 +2223,11 @@ MonoBehaviour:
   - {fileID: 1758110447}
   - {fileID: 431303208}
   - {fileID: 235370643}
+  - {fileID: 1174510629}
+  - {fileID: 1558260319}
+  - {fileID: 360626779}
+  - {fileID: 2036783565}
+  - {fileID: 621281207}
   itemParent: {fileID: 1658641733}
   itemPrefeb: {fileID: 1703819885421892573, guid: a52ee3352eaca964e89871983d76b670, type: 3}
   craftingInputSlots:
@@ -2233,6 +2238,7 @@ MonoBehaviour:
   craftingOutputSlot: {fileID: 621281207}
   craftingOutputImage: {fileID: 0}
   isOpen: 0
+  windowRect: {fileID: 0}
 --- !u!1 &893423181
 GameObject:
   m_ObjectHideFlags: 0
@@ -2993,7 +2999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isCraftingSlot: 0
+  isCraftingSlot: 1
 --- !u!1 &1189956384
 GameObject:
   m_ObjectHideFlags: 0
@@ -3737,7 +3743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isCraftingSlot: 0
+  isCraftingSlot: 1
 --- !u!1 &1645363733
 GameObject:
   m_ObjectHideFlags: 0
@@ -3834,6 +3840,7 @@ RectTransform:
   m_Children:
   - {fileID: 1661072636}
   - {fileID: 885443865}
+  - {fileID: 1853195018}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4372,6 +4379,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 0}
   isCraftingSlot: 0
+--- !u!1 &1853195017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1853195018}
+  - component: {fileID: 1853195019}
+  m_Layer: 5
+  m_Name: RecipeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1853195018
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1853195017}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1645363737}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1853195019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1853195017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018626f377228824eb8323d3049d0e61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipes: []
 --- !u!1 &1897965267
 GameObject:
   m_ObjectHideFlags: 0
@@ -4515,7 +4571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isCraftingSlot: 0
+  isCraftingSlot: 1
 --- !u!1 &2052584945
 GameObject:
   m_ObjectHideFlags: 0

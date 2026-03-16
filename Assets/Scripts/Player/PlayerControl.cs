@@ -34,6 +34,10 @@ public class PlayerControl : Entity
         CheckMove();
         if (!inventory.isOpen)
         {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                DropSelectedItem();
+            }
             CheckRotation();
             CheckJump();
             //Debug.Log(onGround);
@@ -183,6 +187,31 @@ public class PlayerControl : Entity
     {
         //Debug.Log("Pickup" + type);
         inventory.Pickup(type);
+    }
+
+    void DropSelectedItem()
+    {
+        if (hotbar == null) return;
+
+        InventorySlot slot = inventory.slots[hotbar.selectedSlot];
+        if (slot.item != null)
+        {
+            Vector3 dropPos = transform.position;
+            Vector3 velocity = cameraSettings.camera.transform.forward * 3f;
+
+            BlockType blockType;
+            if (System.Enum.TryParse<BlockType>(slot.item.itemName, out blockType))
+            {
+                World.instance.CreatDrop(dropPos, blockType, velocity);
+            }
+
+            slot.item.IncreaseAmmount(-1);
+            if (slot.item.ammount <= 0)
+            {
+                Destroy(slot.item.gameObject);
+                slot.item = null;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
