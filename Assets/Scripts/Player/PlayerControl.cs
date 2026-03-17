@@ -189,6 +189,28 @@ public class PlayerControl : Entity
         inventory.Pickup(type);
     }
 
+    public void DropItem(InventoryItem item,bool all = false)
+    {
+        Vector3 dropPos = transform.position + new Vector3(0, 1, 0);
+        Vector3 velocity = cameraSettings.camera.transform.forward * 3f;
+
+        BlockType blockType;
+        int cnt = all ? item.ammount : 1;
+        if (System.Enum.TryParse<BlockType>(item.itemName, out blockType))
+        {
+            for(int i=0;i<cnt;i++)
+                World.instance.CreatDrop(dropPos, blockType, velocity);
+        }
+
+        item.IncreaseAmmount(-cnt);
+        if (item.ammount <= 0)
+        {
+            InventorySlot slot = item.slot;
+            if(slot != null) slot.item = null;
+            Destroy(item.gameObject);
+        }
+    }
+
     void DropSelectedItem()
     {
         if (hotbar == null) return;
@@ -196,21 +218,7 @@ public class PlayerControl : Entity
         InventorySlot slot = inventory.slots[hotbar.selectedSlot];
         if (slot.item != null)
         {
-            Vector3 dropPos = transform.position;
-            Vector3 velocity = cameraSettings.camera.transform.forward * 3f;
-
-            BlockType blockType;
-            if (System.Enum.TryParse<BlockType>(slot.item.itemName, out blockType))
-            {
-                World.instance.CreatDrop(dropPos, blockType, velocity);
-            }
-
-            slot.item.IncreaseAmmount(-1);
-            if (slot.item.ammount <= 0)
-            {
-                Destroy(slot.item.gameObject);
-                slot.item = null;
-            }
+            DropItem(slot.item);
         }
     }
 

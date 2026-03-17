@@ -71,15 +71,15 @@ public class World : MonoBehaviour
         {
             lastPosition = currentPosition;
 
-            foreach (KeyValuePair<Vector2Int, Chunk> entry in visChunks)
-            {
-                Vector2Int pos = entry.Key;
-                if (Mathf.Abs(pos.x - playerChunkX) > renderChunk || Mathf.Abs(pos.y - playerChunkY) > renderChunk)
-                {
-                    UnloadChunk(pos.x, pos.y);
-                    yield return null;
-                }
-            }
+            //foreach (KeyValuePair<Vector2Int, Chunk> entry in visChunks)
+            //{
+            //    Vector2Int pos = entry.Key;
+            //    if (Mathf.Abs(pos.x - playerChunkX) > renderChunk || Mathf.Abs(pos.y - playerChunkY) > renderChunk)
+            //    {
+            //        UnloadChunk(pos.x, pos.y);
+            //        yield return null;
+            //    }
+            //}
 
             for (int x = -renderChunk; x <= renderChunk; x++)
             {
@@ -137,8 +137,15 @@ public class World : MonoBehaviour
     {
         GameObject dropObj = Instantiate(dropPrefeb, position, Quaternion.identity);
         dropObj.name = "DropItem";
+
+        if (velocity != default)
+        {
+            Rigidbody rb = dropObj.GetComponent<Rigidbody>();
+            rb.velocity = velocity;
+        }
+
         DroppedItem droppedItem = dropObj.GetComponentInChildren<DroppedItem>();
-        droppedItem.Init(type, velocity);
+        droppedItem.Init(type);
     }
 
 }

@@ -30,6 +30,9 @@ public class RecipeManager : MonoBehaviour
 
         string[] inputs4 = new string[] { null, null, null, "Wood" };
         recipes.Add(new CraftingRecipe("Planks", 4, inputs4));
+
+        string[] inputs5 = new string[] { "Planks", "Planks", "Planks", "Planks" };
+        recipes.Add(new CraftingRecipe("CraftingTable", 1, inputs5));
     }
 
     /// <summary>

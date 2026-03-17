@@ -25,6 +25,8 @@ public class Inventory : MonoBehaviour
     [Header("丢弃系统")]
     public RectTransform windowRect;
 
+    public PlayerControl playerControl;
+
     void Start()
     {
         InitializeCraftingSlots();
@@ -377,34 +379,6 @@ public class Inventory : MonoBehaviour
     {
         if (item == null) return;
 
-        Transform playerTransform = null;
-        Camera playerCamera = null;
-
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-        {
-            PlayerControl pc = playerObj.GetComponent<PlayerControl>();
-            if (pc != null)
-            {
-                playerTransform = pc.transform;
-                playerCamera = pc.cameraSettings.camera;
-            }
-        }
-
-        if (playerTransform == null || playerCamera == null) 
-        {
-            Destroy(item.gameObject);
-            return;
-        }
-
-        Vector3 dropPos = playerTransform.position + playerCamera.transform.forward * 0.5f;
-        Vector3 velocity = playerCamera.transform.forward * 3f + Vector3.up * 2f;
-
-        BlockType blockType;
-        if (System.Enum.TryParse<BlockType>(item.itemName, out blockType))
-        {
-            World.instance.CreatDrop(dropPos, blockType, velocity);
-        }
-        Destroy(item.gameObject);
+        playerControl.DropItem(item,true);
     }
 }

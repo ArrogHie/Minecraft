@@ -2238,7 +2238,8 @@ MonoBehaviour:
   craftingOutputSlot: {fileID: 621281207}
   craftingOutputImage: {fileID: 0}
   isOpen: 0
-  windowRect: {fileID: 0}
+  windowRect: {fileID: 724119705}
+  playerControl: {fileID: 230391093}
 --- !u!1 &893423181
 GameObject:
   m_ObjectHideFlags: 0
