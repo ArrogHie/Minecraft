@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    [SerializeField]
     public float speed;
     public float jumpForce;
 
     public new Rigidbody rigidbody;
 
-    void Awake()
+    protected virtual void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
     }

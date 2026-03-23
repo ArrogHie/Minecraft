@@ -503,6 +503,10 @@ MonoBehaviour:
   activeBlock: 0
   inventory: {fileID: 885443866}
   hotbar: {fileID: 1109384337}
+  maxHealth: 20
+  currentHealth: 0
+  jumpTrigger: {fileID: 1399369184}
+  jumpVelocityThreshold: 0.05
 --- !u!65 &230391094
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2024,6 +2028,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801987383}
   m_CullTransparentMesh: 1
+--- !u!1 &820999540
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820999542}
+  - component: {fileID: 820999541}
+  m_Layer: 0
+  m_Name: EnemySpw
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &820999541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820999540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb47ead03e5be04f92313897fb7d81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zombiePrefab: {fileID: 9160191212753321917, guid: 8568102992107a74187c466a3403c6e0, type: 3}
+  skeletonPrefab: {fileID: 216785385407271748, guid: 3cc249907654d7a4d90e33937925f1f3, type: 3}
+  maxEnemies: 5
+  spawnRadiusMin: 8
+  spawnRadiusMax: 15
+  spawnCooldown: 5
+--- !u!4 &820999542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820999540}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.101711, y: -9.020554, z: 14.749538}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &872338254
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -3290,6 +3344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1399369182}
   - component: {fileID: 1399369183}
+  - component: {fileID: 1399369184}
   m_Layer: 0
   m_Name: JumpTrigger
   m_TagString: Untagged
@@ -3333,6 +3388,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1399369184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399369181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a84e0a13cb353a34a936fe42f96934bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1403297399
 GameObject:
   m_ObjectHideFlags: 0
@@ -3799,6 +3866,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 0}
   isCraftingSlot: 1
+--- !u!1 &1639990531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1639990533}
+  - component: {fileID: 1639990532}
+  m_Layer: 0
+  m_Name: EnemyMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1639990532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639990531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6388928bb82222e4a9bcde9fbc28543f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1639990533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639990531}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.101711, y: -9.020554, z: 14.749538}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1645363733
 GameObject:
   m_ObjectHideFlags: 0
@@ -4788,3 +4899,5 @@ SceneRoots:
   - {fileID: 1403297402}
   - {fileID: 230391092}
   - {fileID: 375467951}
+  - {fileID: 1639990533}
+  - {fileID: 820999542}

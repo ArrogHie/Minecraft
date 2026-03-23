@@ -7,7 +7,12 @@ public class PlayerControl : Entity
     public Inventory inventory;
     public Hotbar hotbar;
 
-    private int onGround = 0;
+    public int maxHealth = 20;
+    public int currentHealth;
+
+    public JumpTrigger jumpTrigger;
+    public float jumpVelocityThreshold = 0.05f;
+
     private float xRotation = 0f;
     private float yRotation = 0f;
 
@@ -16,16 +21,26 @@ public class PlayerControl : Entity
     private Block breakingBlock;
     private RaycastHit targetRaycastHit;
 
-    private void Awake()
+    protected new void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (rigidbody == null)
+        {
+            rigidbody = GetComponent<Rigidbody>();
+        }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
+        currentHealth = maxHealth;
+        if (jumpForce == 0) jumpForce = 7f;
 
+        if (jumpTrigger == null)
+        {
+            jumpTrigger = GetComponentInChildren<JumpTrigger>();
+        }
     }
 
     // Update is called once per frame
@@ -40,7 +55,6 @@ public class PlayerControl : Entity
             }
             CheckRotation();
             CheckJump();
-            //Debug.Log(onGround);
             CheckTargetBlock();
             //Debug.Log(targetBlock);
             if (Input.GetButtonDown("Fire2")) TryPressBlock();
@@ -93,11 +107,14 @@ public class PlayerControl : Entity
 
     private void CheckJump()
     {
-        if (onGround == 0) return;
         if (Input.GetButtonDown("Jump"))
         {
+            bool isGrounded = jumpTrigger != null && jumpTrigger.IsTouchingChunk();
+            float verticalSpeed = rigidbody.velocity.y;
+
+            if (!isGrounded || Mathf.Abs(verticalSpeed) > jumpVelocityThreshold) return;
+
             Jump();
-            //Debug.Log("press jump");
         }
     }
 
@@ -152,7 +169,7 @@ public class PlayerControl : Entity
     {
         if (targetBlock == null) { return; }
         if (activeBlock == BlockType.Air) { return; }
-        
+
         Chunk targetChunk = targetBlock.owner;
         if (targetChunk == null) { return; }
 
@@ -189,7 +206,7 @@ public class PlayerControl : Entity
         inventory.Pickup(type);
     }
 
-    public void DropItem(InventoryItem item,bool all = false)
+    public void DropItem(InventoryItem item, bool all = false)
     {
         Vector3 dropPos = transform.position + new Vector3(0, 1, 0);
         Vector3 velocity = cameraSettings.camera.transform.forward * 3f;
@@ -198,7 +215,7 @@ public class PlayerControl : Entity
         int cnt = all ? item.ammount : 1;
         if (System.Enum.TryParse<BlockType>(item.itemName, out blockType))
         {
-            for(int i=0;i<cnt;i++)
+            for (int i = 0; i < cnt; i++)
                 World.instance.CreatDrop(dropPos, blockType, velocity);
         }
 
@@ -206,7 +223,7 @@ public class PlayerControl : Entity
         if (item.ammount <= 0)
         {
             InventorySlot slot = item.slot;
-            if(slot != null) slot.item = null;
+            if (slot != null) slot.item = null;
             Destroy(item.gameObject);
         }
     }
@@ -222,16 +239,23 @@ public class PlayerControl : Entity
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void TakeDamage(int damage)
     {
-        onGround++;
-        //Debug.Log("On Ground");
+        currentHealth -= damage;
+        Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void Die()
     {
-        onGround--;
-        //Debug.Log("Jumped");
+        Debug.Log("Player died!");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        enabled = false;
     }
 
     [System.Serializable]
