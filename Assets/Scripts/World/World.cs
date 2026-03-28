@@ -10,6 +10,8 @@ public class World : MonoBehaviour
     public int renderChunk = 5;
     public Material cubeMate;
     public GameObject player;
+    public Camera loadCamera;
+    public WorldLoadingState loadingState;
 
     private Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
     private ConcurrentDictionary<Vector2Int, Chunk> visChunks = new ConcurrentDictionary<Vector2Int, Chunk>();
@@ -17,12 +19,16 @@ public class World : MonoBehaviour
 
     private int seed;
 
-    [Header("������")]
+    [Header("DropPrefeb")]
     public GameObject dropPrefeb;
 
     private void Awake()
     {
         instance = this;
+        if (loadingState == null)
+        {
+            loadingState = GetComponent<WorldLoadingState>();
+        }
     }
 
     private void SetSeed()
@@ -35,7 +41,15 @@ public class World : MonoBehaviour
     {
         SetSeed();
         InitPlayer();
-        StartCoroutine(GenerateWorld());
+        SetLoadingVisualState(true);
+
+        int totalChunks = (renderChunk * 2 + 1) * (renderChunk * 2 + 1);
+        if (loadingState != null)
+        {
+            loadingState.BeginLoading(totalChunks);
+        }
+
+        StartCoroutine(GenerateWorld(totalChunks));
     }
 
     private void Update()
@@ -48,17 +62,40 @@ public class World : MonoBehaviour
         player.SetActive(false);
     }
 
-    IEnumerator GenerateWorld()
+    void SetLoadingVisualState(bool isLoading)
     {
+        if (loadCamera != null)
+        {
+            loadCamera.gameObject.SetActive(isLoading);
+        }
+    }
+
+    IEnumerator GenerateWorld(int totalChunks)
+    {
+        int loadedChunks = 0;
         for (int x = -renderChunk; x <= renderChunk; x++)
         {
             for (int y = -renderChunk; y <= renderChunk; y++)
             {
                 loadChunk(x, y);
+
+                loadedChunks++;
+                if (loadingState != null)
+                {
+                    loadingState.SetProgress(loadedChunks, totalChunks);
+                }
+
                 yield return null;
             }
         }
+
+        if (loadingState != null)
+        {
+            loadingState.FinishLoading();
+        }
+
         player.SetActive(true);
+        SetLoadingVisualState(false);
         lastPosition = new Vector2Int(0, 0);
     }
 
