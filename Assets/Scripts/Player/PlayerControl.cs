@@ -12,6 +12,7 @@ public class PlayerControl : Entity
 
     public JumpTrigger jumpTrigger;
     public float jumpVelocityThreshold = 0.05f;
+    private float jumpColdtime = 0f;
 
     private float xRotation = 0f;
     private float yRotation = 0f;
@@ -107,13 +108,16 @@ public class PlayerControl : Entity
 
     private void CheckJump()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (jumpColdtime >= 0f)
+            jumpColdtime -= Time.deltaTime;
+        if (Input.GetButton("Jump") && jumpColdtime < 0f)
         {
             bool isGrounded = jumpTrigger != null && jumpTrigger.IsTouchingChunk();
             float verticalSpeed = rigidbody.velocity.y;
 
             if (!isGrounded || Mathf.Abs(verticalSpeed) > jumpVelocityThreshold) return;
 
+            jumpColdtime = 0.5f;
             Jump();
         }
     }

@@ -3138,10 +3138,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.0011792183
-    width: 1
-    height: 0.99764156
+    x: 0.10969642
+    y: 0
+    width: 0.78060716
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -3471,10 +3471,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.0011792183
-    width: 1
-    height: 0.99764156
+    x: 0.10969642
+    y: 0
+    width: 0.78060716
+    height: 1
   near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
@@ -4796,7 +4796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8944b5dea1ce9aa44baf153be1544187, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderChunk: 3
+  renderChunk: 8
   cubeMate: {fileID: 2100000, guid: 544839844fdb1fc4da9772fe064ad130, type: 2}
   player: {fileID: 230391089}
   loadCamera: {fileID: 916766910}
